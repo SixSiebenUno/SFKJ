@@ -32,9 +32,9 @@ target_include_directories(aby
 # libc++.  Linking to libstdc++fs is currently required when using the
 # std::filesystem library.
 # cf. https://gitlab.kitware.com/cmake/cmake/issues/17834
-# target_link_libraries(aby
-# 	PRIVATE stdc++fs
-# )
+target_link_libraries(aby
+ 	PRIVATE stdc++fs
+)
 
 target_link_libraries(aby
     PUBLIC OTExtension::otextension

@@ -2,9 +2,6 @@ project(PSI_ANALYTICS)
 cmake_minimum_required(VERSION 3.13)
 cmake_policy(SET CMP0077 NEW)
 
-set(CMAKE_CXX_STANDARD 14)
-include_directories(/usr/local/include)
-
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 
 option(PSI_ANALYTICS_BUILD_TESTS "Build PSI analytics tests" ON)

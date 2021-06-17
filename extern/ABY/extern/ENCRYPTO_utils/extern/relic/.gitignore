@@ -22,8 +22,6 @@ Makefile
 */CMakeFiles
 CMakeFiles
 
-*.cmake
-
 lib/
 bin/
 

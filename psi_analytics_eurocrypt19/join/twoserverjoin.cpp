@@ -62,7 +62,7 @@ namespace ENCRYPTO {
         vector<vector<share*>> invals(neles), outvals(neles);
         vector<vector<vector<share*>>> circuits(logn + 1);
         vector<share*> tags(neles), shrtags(neles), prefixsum(neles);
-        share *zero = bc->PutCONSGate((uint32_t)0, 32);
+        share *zero = bc->PutCONSGate((uint32_t)0u, 32);
         share *one = bc->PutCONSGate((uint32_t)1, 32);
         share *two = bc->PutCONSGate((uint32_t)2, 32);
 

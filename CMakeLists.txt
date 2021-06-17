@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.13)
 cmake_policy(SET CMP0077 NEW)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
-set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "/usr/lib64")
 
 option(PSI_ANALYTICS_BUILD_TESTS "Build PSI analytics tests" ON)
 option(PSI_ANALYTICS_BUILD_EXAMPLE "Build PSI analytics example" ON)

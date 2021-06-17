@@ -22,9 +22,6 @@ if(NOT GMP_LIB)
   message(FATAL_ERROR "gmpxx library not found.")
 endif()
 
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
-
 add_library(psi_analytics_eurocrypt19
         common/psi_analytics.cpp
         common/helpers.cpp

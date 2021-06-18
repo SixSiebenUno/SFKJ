@@ -713,13 +713,15 @@ int main(int argc, char **argv) {
   // TPCHDemo(config);
   // LinearDemo(config);
 
+  cout << "start" << endl;
+
   config.comm_cost = 0;
   config.total_time = 0;
 
-  // PlaintextMovieLensDemo(config);
+  PlaintextMovieLensDemo(config);
   // PlaintextTPCHDemo(config);
 
-  PuriDemo(config);
+  // PuriDemo(config);
 
   // MovielensLinearDemo(config);
 

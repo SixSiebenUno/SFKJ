@@ -186,19 +186,19 @@ namespace ENCRYPTO {
         sock->Close();
         uint64_t outputattributes = svrattributes + cliattributes;
 
-        // cout << "communicate round finished " << outputsize << ' ' << outputattributes << endl;
+        cout << "communicate round finished " << outputsize << ' ' << outputattributes << endl;
 
         std::vector<std::vector<uint32_t>> tempweights;
         std::vector<bool> tempequaltags;
         std::vector<int32_t> orders;
 
-        // cout << "PSI phase" << endl;
+        cout << "PSI phase" << endl;
 
     // PSI
         PSIpayload(sortedjoinkey, tempweights, rolecontext, orders, tempequaltags);
 
     // OEP with correct lines
-    // cout << "oep phase" << endl;
+    cout << "oep phase" << endl;
         vector<uint32_t> invorders(orders.size() << 1);
         for (auto i=0; i<orders.size(); ++i) {
             invorders[orders[i]] = i;

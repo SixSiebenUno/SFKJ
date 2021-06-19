@@ -449,6 +449,8 @@ void MNISTDemo(PsiAnalyticsContext &config) {
   vector<vector<uint32_t>> result;
   vector<bool> et;
 
+  cout << "going to JOIN " << endl;
+
   if (config.role == SERVER) {
     JoinServer({0}, fact, result, et, config);
   } else if (config.role == CLIENT) {

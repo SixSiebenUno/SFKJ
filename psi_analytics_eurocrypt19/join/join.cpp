@@ -210,14 +210,14 @@ namespace ENCRYPTO {
             oepindices[i] = invorders[keymapid[joinkey[i]]];
         }
 
-        // for (auto i=0; i<outputsize; ++i) {
-        //     cout << i << ' ' << tuples[i][joinkeyid[0]] << ' ' << oepindices[i] << endl;
-        // }
+        for (auto i=0; i<outputsize; ++i) {
+            cout << i << ' ' << tuples[i][joinkeyid[0]] << ' ' << oepindices[i] << endl;
+        }
         vector<vector<uint32_t>> oepresults;
         vector<vector<uint32_t>> oeptagresults;
 
         OEPServer(oepindices, oepresults, rolecontext, S_ARITH);
-        // cout << "oep tag server" << endl;
+        cout << "oep tag server" << endl;
         OEPServer(oepindices, oeptagresults, rolecontext, S_BOOL);
 
         for (auto i=0; i<outputsize; ++i) {
@@ -226,7 +226,7 @@ namespace ENCRYPTO {
             }
         }
 
-        // cout << "finished oep" << endl;
+        cout << "finished oep" << endl;
         // for (auto i=0; i<outputsize; ++i) {
         //     for (auto j=0; j<oepresults[i].size(); ++j) {
         //         cout << oepresults[i][j] << ' ';

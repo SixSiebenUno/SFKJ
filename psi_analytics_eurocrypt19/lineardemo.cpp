@@ -430,16 +430,16 @@ void OULADDemo(PsiAnalyticsContext &config) {
 void MNISTDemo(PsiAnalyticsContext &config) {
   vector<vector<uint32_t>> fact, dim;
   
-  fact.resize(10000);
-  for (auto i=0; i<10000; ++i) {
-    fact[i].resize(196);
-    for (auto j=0; j<196; ++j) {
+  fact.resize(1000);
+  for (auto i=0; i<1000; ++i) {
+    fact[i].resize(2);
+    for (auto j=0; j<2; ++j) {
       fact[i][j] = rand();
     }
   }
 
-  dim.resize(10000);
-  for (auto i=0; i<10000; ++i) {
+  dim.resize(1000);
+  for (auto i=0; i<1000; ++i) {
     dim[i].resize(2);
     for (auto j=0; j<2; ++j) {
       dim[i][j] = rand();

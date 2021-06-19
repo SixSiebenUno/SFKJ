@@ -245,7 +245,7 @@ namespace ENCRYPTO {
             for (uint32_t j=0; j<cliattributes; ++j) {
                 outputs[i][j+svrattributes] = oepresults[i][j];
             }
-            // cout << tempequaltags[oepindices[i]] << ' ' << oeptagresults[i][0] << endl;
+            cout << tempequaltags[oepindices[i]] << ' ' << oeptagresults[i][0] << endl;
             equaltags[i] = tempequaltags[oepindices[i]] ^ ((bool)(oeptagresults[i][0] & 1));
         }
 
@@ -253,6 +253,7 @@ namespace ENCRYPTO {
 
         context.total_time += (end_time - start_time).count();
         context.comm_cost += rolecontext.comm_cost;
+        cout << "finished join" << endl;
     }
 
     void JoinClient(vector<uint32_t> joinkeyid, vector<vector<uint32_t>> tuples,

@@ -446,8 +446,8 @@ void MNISTDemo(PsiAnalyticsContext &config) {
     }
   }
 
-  vector<vector<uint32_t>> result;
-  vector<bool> et;
+  vector<vector<uint32_t>> result(fact.size());
+  vector<bool> et(fact.size());
 
   cout << "going to JOIN " << endl;
 

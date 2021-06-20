@@ -457,6 +457,8 @@ void MNISTDemo(PsiAnalyticsContext &config) {
     JoinClient({0}, dim, fact, result, et, config);
   }
 
+  cout << "end join" << endl;
+
   cout << "total communication cost = " << config.comm_cost / 1024.0 / 1024 << " MB" <<endl;
   cout << "total time cost = " << config.total_time / CLOCKS_PER_SEC << " s" <<endl;
   return;

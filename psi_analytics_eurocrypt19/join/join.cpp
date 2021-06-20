@@ -254,6 +254,7 @@ namespace ENCRYPTO {
         context.total_time += (end_time - start_time).count();
         context.comm_cost += rolecontext.comm_cost;
         cout << "finished join" << endl;
+        return 0;
     }
 
     void JoinClient(vector<uint32_t> joinkeyid, vector<vector<uint32_t>> tuples,
@@ -333,6 +334,9 @@ namespace ENCRYPTO {
         
         context.total_time += (end_time - start_time).count();
         context.comm_cost += rolecontext.comm_cost;
+
+        cout << "finished join" << endl;
+        return 0;
     }
 
 

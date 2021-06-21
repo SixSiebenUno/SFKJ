@@ -558,11 +558,11 @@ void TPCHDemo(PsiAnalyticsContext &config) {
   vector<bool> eq1, eq2;
   
   if (config.role == CLIENT) {
-    // JoinServer({1}, orders, OC, eq1, config);
-    SharedJoinServer({1}, orders, customer, OC, eq1, config);
+    JoinServer({1}, orders, OC, eq1, config);
+    // SharedJoinServer({1}, orders, customer, OC, eq1, config);
   } else {
-    // JoinClient({0}, customer, orders, OC, eq1, config);
-    SharedJoinClient({0}, customer, orders, OC, eq1, config);
+    JoinClient({0}, customer, orders, OC, eq1, config);
+    // SharedJoinClient({0}, customer, orders, OC, eq1, config);
   }
   // CheckPhase(OC, eq1, config);
   cout << "orders join customer finished" << endl;;
@@ -715,10 +715,11 @@ int main(int argc, char **argv) {
   TPCHDemo(config);
   // LinearDemo(config);
 
-  // config.comm_cost = 0;
-  // config.total_time = 0;
+  config.comm_cost = 0;
+  config.total_time = 0;
 
   // PlaintextMovieLensDemo(config);
+  cout << endl;
   PlaintextTPCHDemo(config);
 
   // PuriDemo(config);

@@ -24,7 +24,7 @@ using namespace osuCrypto;
 
 namespace ENCRYPTO{
 
-void BooleanInnerProduct(vector<bool> input, vector<bool>& outputs, ENCRYPTO::PsiAnalyticsContext context) {
+void BooleanInnerProduct(vector<bool> input, vector<bool>& outputs, ENCRYPTO::PsiAnalyticsContext &context) {
     ABYParty party(static_cast<e_role>(context.role), context.address, context.port, LT, 64,
                 context.nthreads);
     party.ConnectAndBaseOTs();
@@ -63,7 +63,7 @@ void BooleanInnerProduct(vector<bool> input, vector<bool>& outputs, ENCRYPTO::Ps
 }
 
 void MergeTags(std::vector<bool> tag1, std::vector<bool> tag2, std::vector<bool>& newtag, multicom mcom,
-                ENCRYPTO::PsiAnalyticsContext context) {
+                ENCRYPTO::PsiAnalyticsContext &context) {
     
     // cout << "merge tags  " << tag1.size() << ' ' << tag2.size() << endl;
     auto size = tag1.size();
@@ -106,7 +106,7 @@ void MergeTags(std::vector<bool> tag1, std::vector<bool> tag2, std::vector<bool>
 }
 
 void MergeTags(std::vector<bool> tag1, std::vector<bool> tag2, std::vector<bool>& newtag,
-               ENCRYPTO::PsiAnalyticsContext context) {
+               ENCRYPTO::PsiAnalyticsContext &context) {
     ABYParty party(static_cast<e_role>(context.role), context.address, context.port, LT, 64,
                     context.nthreads);
     party.ConnectAndBaseOTs();
@@ -143,7 +143,7 @@ void MergeTags(std::vector<bool> tag1, std::vector<bool> tag2, std::vector<bool>
 }
 
 void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_t> > &outputs,
-               ENCRYPTO::PsiAnalyticsContext context, e_sharing type) {
+               ENCRYPTO::PsiAnalyticsContext &context, e_sharing type) {
     uint32_t N, M, weightcnt;
     M = indices.size();
     // communicate output size
@@ -152,7 +152,7 @@ void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_
     sock->Receive(&N, sizeof(uint32_t));
     sock->Receive(&weightcnt, sizeof(uint32_t));
     sock->Close();
-    cout << "oep size" << N << ' ' << M << ' ' << weightcnt << endl;
+    // cout << "oep size" << N << ' ' << M << ' ' << weightcnt << endl;
     uint32_t oriM = M;
     if (M < N) {
         M = N;
@@ -192,8 +192,10 @@ void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_
         weights[i].resize(weightcnt);
         values[i].resize(weightcnt);
     }
-    cout << "first permutation" << endl;
+    // cout << "first permutation" << endl;
     obliviousPermutation(weights, firstPermu, values, context, type);
+
+    auto OT_start_time = std::chrono::system_clock::now();
 
     IOService ios;
     Channel recverChl = Session(ios, (context.address + ":" + std::to_string(context.port)), SessionMode::Client).addChannel();
@@ -205,7 +207,7 @@ void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_
         choicesOne[i] = 1;
         choicesZero[i] = 0;
     }
-    cout << "duplication" << endl;
+    // cout << "duplication" << endl;
     for (auto id = 0; id < M; ++id) {
         // cout << id << ' ' << M << endl;
         BitVector choices = dummyTag[id] ? choicesOne : choicesZero;
@@ -220,6 +222,8 @@ void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_
             }
         }
     }
+    auto OT_end_time = std::chrono::system_clock::now();
+    // cout << "OT " << M * weightcnt << " elements, take " << 1.0 * (OT_end_time - OT_start_time).count() / CLOCKS_PER_SEC << "s, transmit " << recverChl.getTotalDataRecv() / 1024.0 / 1024.0 << "MB" << endl;
 
     vector<uint32_t> secondPermu(M), locid(M);
     vector<bool> usedLoc(M);
@@ -249,7 +253,7 @@ void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_
         values2[i].resize(weightcnt);
     }
 
-    cout << "second permutation" << endl;
+    // cout << "second permutation" << endl;
     obliviousPermutation(weights, secondPermu, values2, context, type);
 
     if (type == S_ARITH) {
@@ -295,7 +299,7 @@ void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_
 }
 
 void OEPClient(std::vector< std::vector<uint32_t> > weights, std::vector< std::vector<uint32_t> > &outputs, 
-               ENCRYPTO::PsiAnalyticsContext context, e_sharing type) {
+               ENCRYPTO::PsiAnalyticsContext &context, e_sharing type) {
     uint32_t N, M, weightcnt;
     N = weights.size();
     weightcnt = weights[0].size();
@@ -305,7 +309,7 @@ void OEPClient(std::vector< std::vector<uint32_t> > weights, std::vector< std::v
     sock->Send(&N, sizeof(uint32_t));
     sock->Send(&weightcnt, sizeof(uint32_t));
     sock->Close();
-    cout << "oep size" << N << ' ' << M << ' ' << weightcnt << endl;
+    // cout << "oep size" << N << ' ' << M << ' ' << weightcnt << endl;
     uint32_t oriM = M;
     if (M < N) {
         M = N;
@@ -322,6 +326,7 @@ void OEPClient(std::vector< std::vector<uint32_t> > weights, std::vector< std::v
     std::vector<uint32_t> empty_indices(M);
     obliviousPermutation(extendedWeights, empty_indices, values, context, type);
 
+    auto OT_start_time = std::chrono::system_clock::now();
     IOService ios;
     Channel senderChl = Session(ios, (context.address + ":" + std::to_string(context.port)), SessionMode::Server).addChannel();
 	std::vector<std::array<block, 2>> sendMessages(weightcnt);
@@ -351,7 +356,10 @@ void OEPClient(std::vector< std::vector<uint32_t> > weights, std::vector< std::v
         }
         sender.sendChosen(sendMessages, prng, senderChl);
         values[id] = rndWeights;
-    }
+    }    
+    auto OT_end_time = std::chrono::system_clock::now();
+    // cout << "OT " << M * weightcnt << " elements, take " << 1.0 * (OT_end_time - OT_start_time).count() / CLOCKS_PER_SEC << "s, transmit " << senderChl.getTotalDataSent() / 1024.0 / 1024.0 << "MB" << endl;
+
 
     std::vector< std::vector<uint32_t> > values2(M);
     outputs.resize(M);
@@ -479,7 +487,7 @@ void permutationToBits(int* permuIndices, int size, bool* bits)
 }
 
 void obliviousPermutation(vector< vector<uint32_t> > weights, vector< uint32_t > indices, 
-                vector< vector<uint32_t> > &value, ENCRYPTO::PsiAnalyticsContext context, e_sharing type) {
+                vector< vector<uint32_t> > &value, ENCRYPTO::PsiAnalyticsContext &context, e_sharing type) {
     e_role role = (e_role)context.role;
 	string address = context.address;
     uint16_t port = context.port;
@@ -510,12 +518,12 @@ void obliviousPermutation(vector< vector<uint32_t> > weights, vector< uint32_t >
     // CLIENT provides weight
     // nothing to do
 
-    permutation_network(role, address, port, seclvl, neles, bitlen, nthreads, mt_alg, sbits, weights, weightlen, value, type);
+    context.comm_cost += permutation_network(role, address, port, seclvl, neles, bitlen, nthreads, mt_alg, sbits, weights, weightlen, value, type);
     return;
 }
 
 // It is a test run for oblivious permutation function
-void obliviousPermutation(ENCRYPTO::PsiAnalyticsContext context) {
+void obliviousPermutation(ENCRYPTO::PsiAnalyticsContext &context) {
     e_role role = (e_role)context.role;
 	string address = context.address;
     uint16_t port = context.port;

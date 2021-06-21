@@ -183,7 +183,6 @@ namespace ENCRYPTO {
         sock->Send(&outputsize, sizeof(uint64_t));
         sock->Send(&svrattributes, sizeof(uint64_t));
         sock->Receive(&cliattributes, sizeof(uint64_t));
-        sock->Close();
         uint64_t outputattributes = svrattributes + cliattributes;
 
         cout << "communicate round finished " << outputsize << ' ' << outputattributes << endl;
@@ -280,7 +279,6 @@ namespace ENCRYPTO {
         sock->Receive(&outputsize, sizeof(uint64_t));
         sock->Receive(&svrattributes, sizeof(uint64_t));
         sock->Send(&cliattributes, sizeof(uint64_t));
-        sock->Close();
         uint64_t outputattributes = svrattributes + cliattributes;
 
         // cout << "communicate round finished " << outputsize << ' ' << outputattributes << endl;

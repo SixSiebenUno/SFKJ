@@ -288,11 +288,10 @@ namespace ENCRYPTO {
         for (auto i=0; i<tempweights.size(); ++i) {
             tempweights[i] = tuples[i];
         }
-    return;
     // PSI
         std::vector<int32_t> orders;
         PSIpayload(joinkey, tempweights, rolecontext, orders, tempequaltags);
-
+    return;
         oepeqtags.resize(tempequaltags.size());
         for (auto i=0; i<tempequaltags.size(); ++i) {
             oepeqtags[i].resize(1);

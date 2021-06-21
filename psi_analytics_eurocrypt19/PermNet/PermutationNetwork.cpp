@@ -152,12 +152,12 @@ uint64_t permutation_network(e_role role, const std::string& address, uint16_t p
 	// 	}
 	// }
 
-	delete party;
-	for (uint32_t i=0; i<weightcnt; ++i) {
-		delete shr_val_set[i];
-		delete shr_out[i];
-		delete new_out[i];
-	}
+	// delete party;
+	// for (uint32_t i=0; i<weightcnt; ++i) {
+	// 	delete shr_val_set[i];
+	// 	delete shr_out[i];
+	// 	delete new_out[i];
+	// }
 
 	return comm_size;
 }
@@ -287,15 +287,15 @@ void test_waksman_network(e_role role, const std::string& address, uint16_t port
 		}
 	}
 
-	delete party;
+	// delete party;
 
-	free(srv_set);
-	free(cli_set);
-	free(shr_server_set);
-	free(shr_client_set);
-	free(shr_out);
-	free(ver_intersect);
-	free(circ_intersect);
+	// free(srv_set);
+	// free(cli_set);
+	// free(shr_server_set);
+	// free(shr_client_set);
+	// free(shr_out);
+	// free(ver_intersect);
+	// free(circ_intersect);
 
 	return;
 }

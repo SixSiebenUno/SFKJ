@@ -279,7 +279,6 @@ void testjoin(ENCRYPTO::PsiAnalyticsContext config) {
 
   // plaintext_join(Aid, Atuples, Bid, Btuples, outputs, config);
 
-  vector<vector<uint32_t>> outputs;
   vector<bool> et;
 
   if (config.role == SERVER) {

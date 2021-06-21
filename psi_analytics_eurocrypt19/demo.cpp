@@ -430,7 +430,7 @@ void MovielensLinearDemo(PsiAnalyticsContext &config) {
 
 std::vector<std::vector<uint32_t>> loadtpchdata(string filename, vector<uint32_t> filterindex) {
     std::vector<std::vector<uint32_t>> weights;
-    string path = "../../data/tpch/data100M/" + filename;
+    string path = "../../data/tpch/data1M/" + filename;
     cout << path << " , ";
 
     if( access( path.c_str(), F_OK ) != -1 ) {
@@ -468,7 +468,7 @@ std::vector<std::vector<uint32_t>> loadtpchdata(string filename, vector<uint32_t
         }
 
         weights.push_back(tempvals);
-        // if (weights.size() > 100) break;
+        if (weights.size() > 100) break;
     }
     cout << weights.size() << " tuples" << endl;
     fin.close();
@@ -710,14 +710,14 @@ int main(int argc, char **argv) {
   // testsharedjoin(config);
 
   // MovieLensDemo(config);
-  // TPCHDemo(config);
+  TPCHDemo(config);
   // LinearDemo(config);
 
   // config.comm_cost = 0;
   // config.total_time = 0;
 
   // PlaintextMovieLensDemo(config);
-  // PlaintextTPCHDemo(config);
+  PlaintextTPCHDemo(config);
 
   // PuriDemo(config);
 

@@ -174,7 +174,7 @@ namespace ENCRYPTO {
         for (auto i=0; i<sortedjoinkey.size(); ++i) {
             keymapid[sortedjoinkey[i]] = i;
         }
-
+    return;
     // communicate tuple size
         uint64_t outputsize = tuples.size();
         uint64_t svrattributes = tuples[0].size();
@@ -270,7 +270,7 @@ namespace ENCRYPTO {
 
         vector<uint64_t> joinkey;
         GenerateJoinKey(joinkeyid, tuples, joinkey);
-    
+    return;
     // communicate tuple size
         uint64_t outputsize = 0;
         uint64_t svrattributes = 0;

@@ -500,9 +500,9 @@ int main(int argc, char **argv) {
 
   // testjoin(config);
 
-  cout << "test join " << endl;
-  testsharedjoin(config);
-  cout << "test join done " << endl;
+  // cout << "test join " << endl;
+  // testsharedjoin(config);
+  // cout << "test join done " << endl;
 
   // testmergetag(config);
   // testoblreveal(config);

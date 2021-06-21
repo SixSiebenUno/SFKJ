@@ -194,11 +194,11 @@ namespace ENCRYPTO {
         cout << "PSI phase" << endl;
     // PSI
         PSIpayload(sortedjoinkey, tempweights, rolecontext, orders, tempequaltags);
-    return;
+
     // OEP with correct lines
     cout << "oep phase" << endl;
         uint32_t invordersize = *max_element(orders.begin(), orders.end());
-        cout << orders.size() << ' ' << invordersize << endl;
+        cout << orders.size() << ' ' << invordersize << ' ' << *min_element(orders.begin(), orders.end()) << endl;
         vector<uint32_t> invorders(invordersize + 10);
         for (auto i=0; i<orders.size(); ++i) {
             invorders[orders[i]] = i;
@@ -291,7 +291,7 @@ namespace ENCRYPTO {
     // PSI
         std::vector<int32_t> orders;
         PSIpayload(joinkey, tempweights, rolecontext, orders, tempequaltags);
-    return;
+
         oepeqtags.resize(tempequaltags.size());
         for (auto i=0; i<tempequaltags.size(); ++i) {
             oepeqtags[i].resize(1);

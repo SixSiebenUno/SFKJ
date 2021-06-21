@@ -160,8 +160,8 @@ namespace ENCRYPTO {
     void JoinServer(vector<uint32_t> joinkeyid, vector<vector<uint32_t>> tuples,
                     vector<vector<uint32_t>> &outputs, vector<bool> &equaltags,
                     ENCRYPTO::PsiAnalyticsContext &context) {
-        // PsiAnalyticsContext rolecontext = context;
-        // rolecontext.role = SERVER;
+        PsiAnalyticsContext rolecontext = context;
+        rolecontext.role = SERVER;
 
         auto start_time = std::chrono::system_clock::now();
 
@@ -179,7 +179,7 @@ namespace ENCRYPTO {
         uint64_t outputsize = tuples.size();
         uint64_t svrattributes = tuples[0].size();
         uint64_t cliattributes = 0;
-        auto sock = EstablishConnection(context.address, context.port, static_cast<e_role>(context.role));
+        auto sock = EstablishConnection(context.address, context.port, static_cast<e_role>(rolecontext.role));
         sock->Send(&outputsize, sizeof(uint64_t));
         sock->Send(&svrattributes, sizeof(uint64_t));
         sock->Receive(&cliattributes, sizeof(uint64_t));
@@ -195,9 +195,10 @@ namespace ENCRYPTO {
         cout << "PSI phase" << endl;
 
     // PSI
-        PSIpayload(sortedjoinkey, tempweights, context, orders, tempequaltags);
+        PSIpayload(sortedjoinkey, tempweights, rolecontext, orders, tempequaltags);
 
     // OEP with correct lines
+    return 0;
     cout << "oep phase" << endl;
         uint32_t invordersize = *max_element(orders.begin(), orders.end());
         cout << orders.size() << ' ' << invordersize << endl;
@@ -218,9 +219,9 @@ namespace ENCRYPTO {
         vector<vector<uint32_t>> oepresults;
         vector<vector<uint32_t>> oeptagresults;
 
-        OEPServer(oepindices, oepresults, context, S_ARITH);
+        OEPServer(oepindices, oepresults, rolecontext, S_ARITH);
         cout << "oep tag server" << endl;
-        OEPServer(oepindices, oeptagresults, context, S_BOOL);
+        OEPServer(oepindices, oeptagresults, rolecontext, S_BOOL);
 
         for (auto i=0; i<outputsize; ++i) {
             for (auto j=0; j<cliattributes; ++j) {
@@ -253,8 +254,8 @@ namespace ENCRYPTO {
 
         auto end_time = std::chrono::system_clock::now();
 
-        // context.total_time += (end_time - start_time).count();
-        // context.comm_cost += rolecontext.comm_cost;
+        context.total_time += (end_time - start_time).count();
+        context.comm_cost += rolecontext.comm_cost;
         cout << "finished join" << endl;
     }
 
@@ -302,7 +303,7 @@ namespace ENCRYPTO {
             oepeqtags[i].resize(1);
             oepeqtags[i][0] = tempequaltags[i];
         }
-
+return 0;
     // OEP
     // cout << "oep phase" << endl;
         vector<vector<uint32_t>> oepresults, oeptagresults;

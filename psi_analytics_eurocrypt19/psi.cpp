@@ -293,7 +293,7 @@ void testjoin(ENCRYPTO::PsiAnalyticsContext config) {
     }
     cout << endl;
   }
-  // CheckPhase(outputs, config);
+  CheckPhase(outputs, config);
 }
 
 // void testsharedjoin(ENCRYPTO::PsiAnalyticsContext config) {

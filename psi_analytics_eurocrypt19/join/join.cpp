@@ -161,6 +161,9 @@ namespace ENCRYPTO {
                     vector<vector<uint32_t>> &outputs, vector<bool> &equaltags,
                     ENCRYPTO::PsiAnalyticsContext &context) {
         PsiAnalyticsContext rolecontext = context;
+        rolecontext.comm_cost = 0;
+        rolecontext.total_time = 0;
+
         rolecontext.role = SERVER;
         cout << rolecontext.comm_cost << ' ' << rolecontext.total_time << endl;
         auto start_time = std::chrono::system_clock::now();
@@ -265,6 +268,8 @@ namespace ENCRYPTO {
         
         PsiAnalyticsContext rolecontext = context;
         rolecontext.role = CLIENT;
+        rolecontext.comm_cost = 0;
+        rolecontext.total_time = 0;
 
         auto start_time = std::chrono::system_clock::now();
 

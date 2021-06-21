@@ -492,6 +492,8 @@ void testsort(ENCRYPTO::PsiAnalyticsContext config) {
 
 int main(int argc, char **argv) {
   auto config = read_test_options(argc, argv);
+  config.total_time = 0;
+  config.comm_cost = 0;
 
   // testObliviousPermutation(config);
   

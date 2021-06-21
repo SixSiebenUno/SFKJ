@@ -162,7 +162,7 @@ namespace ENCRYPTO {
                     ENCRYPTO::PsiAnalyticsContext &context) {
         PsiAnalyticsContext rolecontext = context;
         rolecontext.role = SERVER;
-
+        cout << rolecontext.comm_cost << ' ' << rolecontext.total_time << endl;
         auto start_time = std::chrono::system_clock::now();
 
         vector<uint64_t> joinkey;
@@ -255,6 +255,7 @@ namespace ENCRYPTO {
         context.total_time += (end_time - start_time).count();
         context.comm_cost += rolecontext.comm_cost;
         cout << "finished join" << endl;
+        cout << rolecontext.comm_cost << ' ' << rolecontext.total_time << endl;
     }
 
     void JoinClient(vector<uint32_t> joinkeyid, vector<vector<uint32_t>> tuples,

@@ -19,12 +19,12 @@
 #include "abycore/aby/abyparty.h"
 #include "abycore/sharing/boolsharing.h"
 #include "abycore/sharing/sharing.h"
-#include <vector>
+
 using namespace osuCrypto;
 
 namespace ENCRYPTO{
 
-void BooleanInnerProduct(vector<bool> input, vector<bool>& outputs, ENCRYPTO::PsiAnalyticsContext &context) {
+void BooleanInnerProduct(vector<bool> input, vector<bool>& outputs, ENCRYPTO::PsiAnalyticsContext context) {
     ABYParty party(static_cast<e_role>(context.role), context.address, context.port, LT, 64,
                 context.nthreads);
     party.ConnectAndBaseOTs();
@@ -63,7 +63,7 @@ void BooleanInnerProduct(vector<bool> input, vector<bool>& outputs, ENCRYPTO::Ps
 }
 
 void MergeTags(std::vector<bool> tag1, std::vector<bool> tag2, std::vector<bool>& newtag, multicom mcom,
-                ENCRYPTO::PsiAnalyticsContext &context) {
+                ENCRYPTO::PsiAnalyticsContext context) {
     
     // cout << "merge tags  " << tag1.size() << ' ' << tag2.size() << endl;
     auto size = tag1.size();
@@ -106,7 +106,7 @@ void MergeTags(std::vector<bool> tag1, std::vector<bool> tag2, std::vector<bool>
 }
 
 void MergeTags(std::vector<bool> tag1, std::vector<bool> tag2, std::vector<bool>& newtag,
-               ENCRYPTO::PsiAnalyticsContext &context) {
+               ENCRYPTO::PsiAnalyticsContext context) {
     ABYParty party(static_cast<e_role>(context.role), context.address, context.port, LT, 64,
                     context.nthreads);
     party.ConnectAndBaseOTs();
@@ -143,7 +143,7 @@ void MergeTags(std::vector<bool> tag1, std::vector<bool> tag2, std::vector<bool>
 }
 
 void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_t> > &outputs,
-               ENCRYPTO::PsiAnalyticsContext &context, e_sharing type) {
+               ENCRYPTO::PsiAnalyticsContext context, e_sharing type) {
     uint32_t N, M, weightcnt;
     M = indices.size();
     // communicate output size
@@ -152,17 +152,17 @@ void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_
     sock->Receive(&N, sizeof(uint32_t));
     sock->Receive(&weightcnt, sizeof(uint32_t));
     sock->Close();
-    // cout << "oep size" << N << ' ' << M << ' ' << weightcnt << endl;
+    cout << "oep size" << N << ' ' << M << ' ' << weightcnt << endl;
     uint32_t oriM = M;
     if (M < N) {
         M = N;
     }
 
-    vector<int32_t> indicesCount(M);
+    int32_t* indicesCount = new int32_t[M]();
     for (int i = 0; i < oriM; i++)
         indicesCount[indices[i]]++;
     vector<uint32_t> firstPermu(M);
-    vector<bool> dummyTag(M);
+    bool* dummyTag = new bool[M];
     int32_t dummyIndex = 0, fPIndex = 0;
     for(int32_t i=0;i<M;i++) {
         if (indicesCount[i] > 0) {
@@ -192,10 +192,8 @@ void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_
         weights[i].resize(weightcnt);
         values[i].resize(weightcnt);
     }
-    // cout << "first permutation" << endl;
+    cout << "first permutation" << endl;
     obliviousPermutation(weights, firstPermu, values, context, type);
-
-    auto OT_start_time = std::chrono::system_clock::now();
 
     IOService ios;
     Channel recverChl = Session(ios, (context.address + ":" + std::to_string(context.port)), SessionMode::Client).addChannel();
@@ -207,7 +205,7 @@ void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_
         choicesOne[i] = 1;
         choicesZero[i] = 0;
     }
-    // cout << "duplication" << endl;
+    cout << "duplication" << endl;
     for (auto id = 0; id < M; ++id) {
         // cout << id << ' ' << M << endl;
         BitVector choices = dummyTag[id] ? choicesOne : choicesZero;
@@ -222,8 +220,6 @@ void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_
             }
         }
     }
-    auto OT_end_time = std::chrono::system_clock::now();
-    // cout << "OT " << M * weightcnt << " elements, take " << 1.0 * (OT_end_time - OT_start_time).count() / CLOCKS_PER_SEC << "s, transmit " << recverChl.getTotalDataRecv() / 1024.0 / 1024.0 << "MB" << endl;
 
     vector<uint32_t> secondPermu(M), locid(M);
     vector<bool> usedLoc(M);
@@ -253,7 +249,7 @@ void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_
         values2[i].resize(weightcnt);
     }
 
-    // cout << "second permutation" << endl;
+    cout << "second permutation" << endl;
     obliviousPermutation(weights, secondPermu, values2, context, type);
 
     if (type == S_ARITH) {
@@ -299,7 +295,7 @@ void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_
 }
 
 void OEPClient(std::vector< std::vector<uint32_t> > weights, std::vector< std::vector<uint32_t> > &outputs, 
-               ENCRYPTO::PsiAnalyticsContext &context, e_sharing type) {
+               ENCRYPTO::PsiAnalyticsContext context, e_sharing type) {
     uint32_t N, M, weightcnt;
     N = weights.size();
     weightcnt = weights[0].size();
@@ -309,7 +305,7 @@ void OEPClient(std::vector< std::vector<uint32_t> > weights, std::vector< std::v
     sock->Send(&N, sizeof(uint32_t));
     sock->Send(&weightcnt, sizeof(uint32_t));
     sock->Close();
-    // cout << "oep size" << N << ' ' << M << ' ' << weightcnt << endl;
+    cout << "oep size" << N << ' ' << M << ' ' << weightcnt << endl;
     uint32_t oriM = M;
     if (M < N) {
         M = N;
@@ -326,7 +322,6 @@ void OEPClient(std::vector< std::vector<uint32_t> > weights, std::vector< std::v
     std::vector<uint32_t> empty_indices(M);
     obliviousPermutation(extendedWeights, empty_indices, values, context, type);
 
-    auto OT_start_time = std::chrono::system_clock::now();
     IOService ios;
     Channel senderChl = Session(ios, (context.address + ":" + std::to_string(context.port)), SessionMode::Server).addChannel();
 	std::vector<std::array<block, 2>> sendMessages(weightcnt);
@@ -356,10 +351,7 @@ void OEPClient(std::vector< std::vector<uint32_t> > weights, std::vector< std::v
         }
         sender.sendChosen(sendMessages, prng, senderChl);
         values[id] = rndWeights;
-    }    
-    auto OT_end_time = std::chrono::system_clock::now();
-    // cout << "OT " << M * weightcnt << " elements, take " << 1.0 * (OT_end_time - OT_start_time).count() / CLOCKS_PER_SEC << "s, transmit " << senderChl.getTotalDataSent() / 1024.0 / 1024.0 << "MB" << endl;
-
+    }
 
     std::vector< std::vector<uint32_t> > values2(M);
     outputs.resize(M);
@@ -394,14 +386,14 @@ void OEPClient(std::vector< std::vector<uint32_t> > weights, std::vector< std::v
 }
 
 // The function is to generate selection bits with given permutation indices
-void permutationToBits(vector<int> permuIndices, int size, bool* bits)
+void permutationToBits(int* permuIndices, int size, bool* bits)
 {
     if (size == 2)
         bits[0] = permuIndices[0];
     if (size <= 2)
         return;
 
-    vector<int> invPermuIndices(size);
+    int* invPermuIndices = new int[size];
     for (int i = 0; i < size; i++)
         invPermuIndices[permuIndices[i]] = i;
 
@@ -410,8 +402,8 @@ void permutationToBits(vector<int> permuIndices, int size, bool* bits)
     // Solve the edge coloring problem
 
     // flag=0: non-specified; flag=1: upperNetwork; flag=2: lowerNetwork
-    vector<char> leftFlag(size);
-    vector<char> rightFlag(size);
+    char* leftFlag = new char[size]();
+    char* rightFlag = new char[size]();
     int rightPointer = size - 1;
     int leftPointer;
     while (rightFlag[rightPointer] == 0)
@@ -443,6 +435,7 @@ void permutationToBits(vector<int> permuIndices, int size, bool* bits)
             rightPointer = rightPointer & 1 ? rightPointer - 1 : rightPointer + 1;
         }
     }
+    delete[] invPermuIndices;
 
     // Determine bits on left gates
     int halfSize = size / 2;
@@ -459,17 +452,21 @@ void permutationToBits(vector<int> permuIndices, int size, bool* bits)
     if (odd)
         bits[rightGateIndex + halfSize - 1] = rightFlag[size - 2] == 1;
 
+    delete[] leftFlag;
+    delete[] rightFlag;
+
     // Compute upper network
-    vector<int> upperIndices(halfSize);
+    int* upperIndices = new int[halfSize];
     for (int i = 0; i < halfSize - 1 + odd; i++)
         upperIndices[i] = permuIndices[2 * i + bits[rightGateIndex + i]] / 2;
     if (!odd)
         upperIndices[halfSize - 1] = permuIndices[size - 2] / 2;
     permutationToBits(upperIndices, halfSize, bits + upperIndex);
+    delete[] upperIndices;
 
     // Compute lower network
     int lowerSize = halfSize + odd;
-    vector<int> lowerIndices(lowerSize);
+    int* lowerIndices = new int[lowerSize];
     for (int i = 0; i < halfSize - 1 + odd; i++)
         lowerIndices[i] = permuIndices[2 * i + 1 - bits[rightGateIndex + i]] / 2;
     if (odd)
@@ -477,11 +474,12 @@ void permutationToBits(vector<int> permuIndices, int size, bool* bits)
     else
         lowerIndices[halfSize - 1] = permuIndices[2 * halfSize - 1] / 2;
     permutationToBits(lowerIndices, lowerSize, bits + lowerIndex);
+    delete[] lowerIndices;
 
 }
 
 void obliviousPermutation(vector< vector<uint32_t> > weights, vector< uint32_t > indices, 
-                vector< vector<uint32_t> > &value, ENCRYPTO::PsiAnalyticsContext &context, e_sharing type) {
+                vector< vector<uint32_t> > &value, ENCRYPTO::PsiAnalyticsContext context, e_sharing type) {
     e_role role = (e_role)context.role;
 	string address = context.address;
     uint16_t port = context.port;
@@ -493,8 +491,8 @@ void obliviousPermutation(vector< vector<uint32_t> > weights, vector< uint32_t >
     uint32_t weightlen = weights[0].size();
     uint32_t ng = estimateGates(neles);
     vector<uint32_t> sbits(ng);
-    bool temp_sbits[ng * 2];
-    vector<int> temp_indices (indices.size() * 2);
+    bool* temp_sbits = new bool[ng * 2]();
+    int* temp_indices = new int[indices.size() * 2]();
 
     // SERVER provides selection bits for gate
     // cout << "permuitation bits" << ' ' << neles << ' ' << ng << endl;;
@@ -512,12 +510,12 @@ void obliviousPermutation(vector< vector<uint32_t> > weights, vector< uint32_t >
     // CLIENT provides weight
     // nothing to do
 
-    context.comm_cost += permutation_network(role, address, port, seclvl, neles, bitlen, nthreads, mt_alg, sbits, weights, weightlen, value, type);
+    permutation_network(role, address, port, seclvl, neles, bitlen, nthreads, mt_alg, sbits, weights, weightlen, value, type);
     return;
 }
 
 // It is a test run for oblivious permutation function
-void obliviousPermutation(ENCRYPTO::PsiAnalyticsContext &context) {
+void obliviousPermutation(ENCRYPTO::PsiAnalyticsContext context) {
     e_role role = (e_role)context.role;
 	string address = context.address;
     uint16_t port = context.port;

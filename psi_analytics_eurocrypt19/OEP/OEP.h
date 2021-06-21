@@ -7,7 +7,7 @@
 #include "utils/multicom.h"
 
 namespace ENCRYPTO{
-void BooleanInnerProduct(vector<bool> input, vector<bool>& outputs, ENCRYPTO::PsiAnalyticsContext &context);
+void BooleanInnerProduct(vector<bool> input, vector<bool>& outputs, ENCRYPTO::PsiAnalyticsContext context);
 void MergeTags(std::vector<bool> tag1, std::vector<bool> tag2, std::vector<bool>& newtag, multicom mcom,
                 ENCRYPTO::PsiAnalyticsContext &context);
 void MergeTags(std::vector<bool> tag1, std::vector<bool> tag2, std::vector<bool>& newtag,

@@ -163,7 +163,7 @@ namespace ENCRYPTO {
         PsiAnalyticsContext rolecontext = context;
         rolecontext.role = SERVER;
 
-        auto start_time = std::chrono::system_clock::now();
+        auto start_time = clock();
 
         vector<uint64_t> joinkey;
         GenerateJoinKey(joinkeyid, tuples, joinkey);
@@ -250,9 +250,9 @@ namespace ENCRYPTO {
             equaltags[i] = tempequaltags[oepindices[i]] ^ ((bool)(oeptagresults[i][0] & 1));
         }
 
-        auto end_time = std::chrono::system_clock::now();
+        auto end_time = clock();
 
-        context.total_time += (end_time - start_time).count();
+        context.total_time += (end_time - start_time);
         context.comm_cost += rolecontext.comm_cost;
         cout << "finished join " <<  (end_time - start_time).count() / CLOCKS_PER_SEC << ' ' << CLOCKS_PER_SEC << endl;
     }
@@ -344,7 +344,7 @@ namespace ENCRYPTO {
         PsiAnalyticsContext rolecontext = context;
         rolecontext.role = SERVER;
 
-        auto start_time = std::chrono::system_clock::now();
+        auto start_time = clock();
 
         vector<uint64_t> joinkey;
         GenerateJoinKey(Ajoinkeyid, Atuples, joinkey);
@@ -436,9 +436,9 @@ namespace ENCRYPTO {
             // cout << tempequaltags[oepindices[i]] << ' ' << oeptagresults[i][0] << endl;
             equaltags[i] = tempequaltags[oepindices[i]] ^ ((bool)(oeptagresults[i][0] & 1));
         }
-        auto end_time = std::chrono::system_clock::now();
+        auto end_time = clock();
         
-        context.total_time += (end_time - start_time).count();
+        context.total_time += (end_time - start_time);
         context.comm_cost += rolecontext.comm_cost;
     }
 
@@ -450,7 +450,7 @@ namespace ENCRYPTO {
         PsiAnalyticsContext rolecontext = context;
         rolecontext.role = CLIENT;
 
-        auto start_time = std::chrono::system_clock::now();
+        auto start_time = clock();
 
         vector<uint64_t> joinkey;
         GenerateJoinKey(Bjoinkeyid, Btuples, joinkey);
@@ -514,9 +514,9 @@ namespace ENCRYPTO {
                 outputs[i][svrattributes + j] = oepresults[i][j];
             }
         }
-        auto end_time = std::chrono::system_clock::now();
+        auto end_time = clock();
         
-        context.total_time += (end_time - start_time).count();
+        context.total_time += (end_time - start_time);
         context.comm_cost += rolecontext.comm_cost;
     }
 
@@ -528,7 +528,7 @@ namespace ENCRYPTO {
         PsiAnalyticsContext rolecontext = context;
         rolecontext.role = SERVER;
 
-        auto start_time = std::chrono::system_clock::now();
+        auto start_time = clock();
 
         vector<uint64_t> joinkey;
         GenerateJoinKey(Ajoinkeyid, Atuples, joinkey);
@@ -631,9 +631,9 @@ namespace ENCRYPTO {
             equaltags[i] = tempequaltags[oepindices[i]] ^ ((bool)(oeptagresults[i][0] & 1));
         }
         // cout << "end join" << endl;
-        auto end_time = std::chrono::system_clock::now();
+        auto end_time = clock();
 
-        context.total_time += (end_time - start_time).count();
+        context.total_time += (end_time - start_time);
         context.comm_cost += rolecontext.comm_cost;
     }
 
@@ -645,7 +645,7 @@ namespace ENCRYPTO {
         PsiAnalyticsContext rolecontext = context;
         rolecontext.role = CLIENT;
 
-        auto start_time = std::chrono::system_clock::now();
+        auto start_time = clock();
 
         vector<uint64_t> joinkey;
         GenerateJoinKey(Bjoinkeyid, Btuples, joinkey);
@@ -720,9 +720,9 @@ namespace ENCRYPTO {
                 outputs[i][svrattributes + j] = oepresults[i][j];
             }
         }
-        auto end_time = std::chrono::system_clock::now();
+        auto end_time = clock();
 
-        context.total_time += (end_time - start_time).count();
+        context.total_time += (end_time - start_time);
         context.comm_cost += rolecontext.comm_cost;
     }
 
@@ -735,7 +735,7 @@ namespace ENCRYPTO {
         PsiAnalyticsContext rolecontext = context;
         rolecontext.role = SERVER;
 
-        auto start_time = std::chrono::system_clock::now();
+        auto start_time = clock();
 
         vector<uint64_t> joinkey;
         GenerateJoinKey(Ajoinkeyid, Atuples, joinkey);
@@ -847,9 +847,9 @@ namespace ENCRYPTO {
             oepindices[i] = perm[oepindices[i]];
         }
         // cout << "end join" << endl;
-        auto end_time = std::chrono::system_clock::now();
+        auto end_time = clock();
 
-        context.total_time += (end_time - start_time).count();
+        context.total_time += (end_time - start_time);
         context.comm_cost += rolecontext.comm_cost;
     }
 
@@ -862,7 +862,7 @@ namespace ENCRYPTO {
         PsiAnalyticsContext rolecontext = context;
         rolecontext.role = CLIENT;
 
-        auto start_time = std::chrono::system_clock::now();
+        auto start_time = clock();
 
         vector<uint64_t> joinkey;
         GenerateJoinKey(Bjoinkeyid, Btuples, joinkey);
@@ -936,9 +936,9 @@ namespace ENCRYPTO {
                 outputs[i][svrattributes + j] = oepresults[i][j];
             }
         }
-        auto end_time = std::chrono::system_clock::now();
+        auto end_time = clock();
 
-        context.total_time += (end_time - start_time).count();
+        context.total_time += (end_time - start_time);
         context.comm_cost += rolecontext.comm_cost;
     }
 
@@ -946,7 +946,7 @@ namespace ENCRYPTO {
                     vector<uint32_t> Bjoinedid, vector<vector<uint32_t>> Btuples,
                     vector<vector<uint32_t>> &outputs, ENCRYPTO::PsiAnalyticsContext &context) {
         std::unique_ptr<CSocket> sock = ENCRYPTO::EstablishConnection(context.address, context.port, static_cast<e_role>(context.role));
-        auto start_time = std::chrono::system_clock::now();
+        auto start_time = clock();
         if (context.role == CLIENT) {
             vector<uint32_t> senddata;
             for (auto i=0; i<Btuples.size(); ++i) {
@@ -1020,8 +1020,8 @@ namespace ENCRYPTO {
         }
         context.comm_cost += sock->getSndCnt() + sock->getRcvCnt();
         sock->Close();
-        auto end_time = std::chrono::system_clock::now();
-        context.total_time += (end_time - start_time).count();
+        auto end_time = clock();
+        context.total_time += (end_time - start_time);
     }
 
     void plaintext_join(vector<uint32_t> Ajoinedid, vector<vector<uint32_t>> Atuples,

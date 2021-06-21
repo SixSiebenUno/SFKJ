@@ -508,7 +508,9 @@ int main(int argc, char **argv) {
   // testoblreveal(config);
 
   // testInnerProduct(config);
-  // testsharedjoinwithtags(config);
+  cout << "test join" << endl;
+  testsharedjoinwithtags(config);
+  cout << "test join done" << endl;
 
   // testaggregation(config);
 

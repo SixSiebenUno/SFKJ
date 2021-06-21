@@ -430,7 +430,7 @@ void MovielensLinearDemo(PsiAnalyticsContext &config) {
 
 std::vector<std::vector<uint32_t>> loadtpchdata(string filename, vector<uint32_t> filterindex) {
     std::vector<std::vector<uint32_t>> weights;
-    string path = "../../data/tpch/data1M/" + filename;
+    string path = "../../data/tpch/data100M/" + filename;
     cout << path << " , ";
 
     if( access( path.c_str(), F_OK ) != -1 ) {

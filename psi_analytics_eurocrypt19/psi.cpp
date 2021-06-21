@@ -277,7 +277,16 @@ void testjoin(ENCRYPTO::PsiAnalyticsContext config) {
   Atuples = {{1, 11, 2}, {2, 22, 2}, {3, 33, 1}, {4, 44, 7}, {5, 55, 9}, {6, 66, 3}, {7, 77, 1}, {8, 88, 1}};  
   Btuples = {{1,10}, {2,20}, {3,30}, {4, 40}, {5, 50}};
 
-  plaintext_join(Aid, Atuples, Bid, Btuples, outputs, config);
+  // plaintext_join(Aid, Atuples, Bid, Btuples, outputs, config);
+
+  vector<vector<uint32_t>> outputs;
+  vector<bool> et;
+
+  if (config.role == SERVER) {
+    JoinServer({0}, Atuples, outputs, et, config);
+  } else {
+    JoinClient({0}, Btuples, Atuples, outputs, et, config);
+  }
 
   for (auto i=0; i<outputs.size(); ++i) {
     for (auto j=0; j<outputs[i].size(); ++j) {
@@ -285,6 +294,7 @@ void testjoin(ENCRYPTO::PsiAnalyticsContext config) {
     }
     cout << endl;
   }
+  CheckPhase(outputs, config);
 }
 
 // void testsharedjoin(ENCRYPTO::PsiAnalyticsContext config) {

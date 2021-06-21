@@ -198,7 +198,7 @@ namespace ENCRYPTO {
         PSIpayload(sortedjoinkey, tempweights, rolecontext, orders, tempequaltags);
 
     // OEP with correct lines
-    return 0;
+    return;
     cout << "oep phase" << endl;
         uint32_t invordersize = *max_element(orders.begin(), orders.end());
         cout << orders.size() << ' ' << invordersize << endl;
@@ -303,7 +303,7 @@ namespace ENCRYPTO {
             oepeqtags[i].resize(1);
             oepeqtags[i][0] = tempequaltags[i];
         }
-return 0;
+return;
     // OEP
     // cout << "oep phase" << endl;
         vector<vector<uint32_t>> oepresults, oeptagresults;

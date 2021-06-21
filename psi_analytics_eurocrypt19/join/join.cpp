@@ -160,8 +160,8 @@ namespace ENCRYPTO {
     void JoinServer(vector<uint32_t> joinkeyid, vector<vector<uint32_t>> tuples,
                     vector<vector<uint32_t>> &outputs, vector<bool> &equaltags,
                     ENCRYPTO::PsiAnalyticsContext &context) {
-        PsiAnalyticsContext rolecontext = context;
-        rolecontext.role = SERVER;
+        // PsiAnalyticsContext rolecontext = context;
+        // rolecontext.role = SERVER;
 
         auto start_time = std::chrono::system_clock::now();
 
@@ -195,7 +195,7 @@ namespace ENCRYPTO {
         cout << "PSI phase" << endl;
 
     // PSI
-        PSIpayload(sortedjoinkey, tempweights, rolecontext, orders, tempequaltags);
+        PSIpayload(sortedjoinkey, tempweights, context, orders, tempequaltags);
 
     // OEP with correct lines
     cout << "oep phase" << endl;
@@ -218,9 +218,9 @@ namespace ENCRYPTO {
         vector<vector<uint32_t>> oepresults;
         vector<vector<uint32_t>> oeptagresults;
 
-        OEPServer(oepindices, oepresults, rolecontext, S_ARITH);
+        OEPServer(oepindices, oepresults, context, S_ARITH);
         cout << "oep tag server" << endl;
-        OEPServer(oepindices, oeptagresults, rolecontext, S_BOOL);
+        OEPServer(oepindices, oeptagresults, context, S_BOOL);
 
         for (auto i=0; i<outputsize; ++i) {
             for (auto j=0; j<cliattributes; ++j) {
@@ -253,8 +253,8 @@ namespace ENCRYPTO {
 
         auto end_time = std::chrono::system_clock::now();
 
-        context.total_time += (end_time - start_time).count();
-        context.comm_cost += rolecontext.comm_cost;
+        // context.total_time += (end_time - start_time).count();
+        // context.comm_cost += rolecontext.comm_cost;
         cout << "finished join" << endl;
     }
 

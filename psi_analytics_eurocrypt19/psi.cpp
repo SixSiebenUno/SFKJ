@@ -496,14 +496,14 @@ int main(int argc, char **argv) {
   // testObliviousPermutation(config);
   
 
-  cout << "test psi " << endl;
-  testPSI(config);
-  cout << "test psi done " << endl;
+  // cout << "test psi " << endl;
+  // testPSI(config);
+  // cout << "test psi done " << endl;
 
 
-  cout << "test oep " << endl;
-  testOEP(config);
-  cout << "test oep done " << endl;
+  // cout << "test oep " << endl;
+  // testOEP(config);
+  // cout << "test oep done " << endl;
   // testObExtOT(config);
   // testSharedPSI(config);
 

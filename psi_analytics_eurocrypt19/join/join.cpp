@@ -193,7 +193,7 @@ namespace ENCRYPTO {
         std::vector<int32_t> orders;
 
         cout << "PSI phase" << endl;
-
+    return;
     // PSI
         PSIpayload(sortedjoinkey, tempweights, rolecontext, orders, tempequaltags);
 
@@ -293,7 +293,7 @@ namespace ENCRYPTO {
         for (auto i=0; i<tempweights.size(); ++i) {
             tempweights[i] = tuples[i];
         }
-
+return;
     // PSI
         std::vector<int32_t> orders;
         PSIpayload(joinkey, tempweights, rolecontext, orders, tempequaltags);

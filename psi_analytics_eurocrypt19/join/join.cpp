@@ -201,7 +201,9 @@ namespace ENCRYPTO {
         cout << orders.size() << ' ' << invordersize << ' ' << *min_element(orders.begin(), orders.end()) << endl;
         vector<uint32_t> invorders(invordersize + 10);
         for (auto i=0; i<orders.size(); ++i) {
-            invorders[orders[i]] = i;
+            if (orders[i] != -1) {
+                invorders[orders[i]] = i;
+            }
         }
 
         vector<uint32_t> oepindices(outputsize);

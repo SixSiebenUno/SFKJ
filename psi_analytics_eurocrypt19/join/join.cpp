@@ -385,7 +385,9 @@ namespace ENCRYPTO {
     // cout << "oep phase" << endl;
         vector<uint32_t> invorders(orders.size());
         for (auto i=0; i<orders.size(); ++i) {
-            invorders[orders[i]] = i;
+            if (orders[i] != -1) {
+                invorders[orders[i]] = i;
+            }
         }
 
         vector<uint32_t> oepindices(outputsize);
@@ -577,7 +579,9 @@ namespace ENCRYPTO {
     // cout << "oep phase" << endl;
         vector<uint32_t> invorders(orders.size());
         for (auto i=0; i<orders.size(); ++i) {
-            invorders[orders[i]] = i;
+            if (orders[i] != -1) {
+                invorders[orders[i]] = i;
+            }
         }
 
         vector<uint32_t> oepindices(outputsize);
@@ -776,7 +780,9 @@ namespace ENCRYPTO {
     // cout << "oep phase" << endl;
         vector<uint32_t> invorders(orders.size());
         for (auto i=0; i<orders.size(); ++i) {
-            invorders[orders[i]] = i;
+            if (orders[i] != -1) {
+                invorders[orders[i]] = i;
+            }
         }
 
         oepindices.resize(outputsize);

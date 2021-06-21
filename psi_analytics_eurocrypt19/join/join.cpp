@@ -179,7 +179,7 @@ namespace ENCRYPTO {
         uint64_t outputsize = tuples.size();
         uint64_t svrattributes = tuples[0].size();
         uint64_t cliattributes = 0;
-        auto sock = EstablishConnection(context.address, context.port, static_cast<e_role>(rolecontext.role));
+        auto sock = EstablishConnection(context.address, context.port, static_cast<e_role>(context.role));
         sock->Send(&outputsize, sizeof(uint64_t));
         sock->Send(&svrattributes, sizeof(uint64_t));
         sock->Receive(&cliattributes, sizeof(uint64_t));

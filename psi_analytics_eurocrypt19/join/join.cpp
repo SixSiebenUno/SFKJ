@@ -199,7 +199,9 @@ namespace ENCRYPTO {
 
     // OEP with correct lines
     cout << "oep phase" << endl;
-        vector<uint32_t> invorders(orders.size() << 1);
+        uint32_t invordersize = *max_element(orders.begin(), orders.end());
+        cout << orders.size() << ' ' << invordersize << endl;
+        vector<uint32_t> invorders(invordersize + 10);
         for (auto i=0; i<orders.size(); ++i) {
             invorders[orders[i]] = i;
         }

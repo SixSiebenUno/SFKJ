@@ -217,7 +217,6 @@ namespace ENCRYPTO {
         vector<vector<uint32_t>> oepresults;
         vector<vector<uint32_t>> oeptagresults;
 
-    return;
         OEPServer(oepindices, oepresults, rolecontext, S_ARITH);
         cout << "oep tag server" << endl;
         OEPServer(oepindices, oeptagresults, rolecontext, S_BOOL);
@@ -300,7 +299,6 @@ namespace ENCRYPTO {
             oepeqtags[i][0] = tempequaltags[i];
         }
 
-    return;
     // OEP
     // cout << "oep phase" << endl;
         vector<vector<uint32_t>> oepresults, oeptagresults;

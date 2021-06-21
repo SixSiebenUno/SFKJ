@@ -174,7 +174,7 @@ namespace ENCRYPTO {
         for (auto i=0; i<sortedjoinkey.size(); ++i) {
             keymapid[sortedjoinkey[i]] = i;
         }
-    return;
+
     // communicate tuple size
         uint64_t outputsize = tuples.size();
         uint64_t svrattributes = tuples[0].size();
@@ -192,12 +192,10 @@ namespace ENCRYPTO {
         std::vector<int32_t> orders;
 
         cout << "PSI phase" << endl;
-    return;
     // PSI
         PSIpayload(sortedjoinkey, tempweights, rolecontext, orders, tempequaltags);
 
     // OEP with correct lines
-    return;
     cout << "oep phase" << endl;
         uint32_t invordersize = *max_element(orders.begin(), orders.end());
         cout << orders.size() << ' ' << invordersize << endl;
@@ -211,13 +209,13 @@ namespace ENCRYPTO {
         for (auto i=0; i<outputsize; ++i) {
             oepindices[i] = invorders[keymapid[joinkey[i]]];
         }
-
         for (auto i=0; i<outputsize; ++i) {
             cout << i << ' ' << tuples[i][joinkeyid[0]] << ' ' << oepindices[i] << endl;
         }
         vector<vector<uint32_t>> oepresults;
         vector<vector<uint32_t>> oeptagresults;
 
+    return;
         OEPServer(oepindices, oepresults, rolecontext, S_ARITH);
         cout << "oep tag server" << endl;
         OEPServer(oepindices, oeptagresults, rolecontext, S_BOOL);
@@ -270,7 +268,6 @@ namespace ENCRYPTO {
 
         vector<uint64_t> joinkey;
         GenerateJoinKey(joinkeyid, tuples, joinkey);
-    return;
     // communicate tuple size
         uint64_t outputsize = 0;
         uint64_t svrattributes = 0;
@@ -291,7 +288,6 @@ namespace ENCRYPTO {
         for (auto i=0; i<tempweights.size(); ++i) {
             tempweights[i] = tuples[i];
         }
-return;
     // PSI
         std::vector<int32_t> orders;
         PSIpayload(joinkey, tempweights, rolecontext, orders, tempequaltags);
@@ -301,7 +297,8 @@ return;
             oepeqtags[i].resize(1);
             oepeqtags[i][0] = tempequaltags[i];
         }
-return;
+
+    return;
     // OEP
     // cout << "oep phase" << endl;
         vector<vector<uint32_t>> oepresults, oeptagresults;

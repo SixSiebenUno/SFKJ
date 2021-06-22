@@ -185,18 +185,18 @@ namespace ENCRYPTO {
         sock->Receive(&cliattributes, sizeof(uint64_t));
         uint64_t outputattributes = svrattributes + cliattributes;
 
-        cout << "communicate round finished " << outputsize << ' ' << outputattributes << endl;
+        // cout << "communicate round finished " << outputsize << ' ' << outputattributes << endl;
 
         std::vector<std::vector<uint32_t>> tempweights;
         std::vector<bool> tempequaltags;
         std::vector<int32_t> orders;
 
-        cout << "PSI phase" << endl;
+        // cout << "PSI phase" << endl;
     // PSI
         PSIpayload(sortedjoinkey, tempweights, rolecontext, orders, tempequaltags);
 
     // OEP with correct lines
-    cout << "oep phase" << endl;
+    // cout << "oep phase" << endl;
         uint32_t invordersize = *max_element(orders.begin(), orders.end());
         // cout << orders.size() << ' ' << invordersize << ' ' << *min_element(orders.begin(), orders.end()) << endl;
         vector<uint32_t> invorders(invordersize + 10);
@@ -218,7 +218,7 @@ namespace ENCRYPTO {
         vector<vector<uint32_t>> oeptagresults;
 
         OEPServer(oepindices, oepresults, rolecontext, S_ARITH);
-        cout << "oep tag server" << endl;
+        // cout << "oep tag server" << endl;
         OEPServer(oepindices, oeptagresults, rolecontext, S_BOOL);
 
         for (auto i=0; i<outputsize; ++i) {
@@ -227,7 +227,7 @@ namespace ENCRYPTO {
             }
         }
 
-        cout << "finished oep" << endl;
+        // cout << "finished oep" << endl;
         // for (auto i=0; i<outputsize; ++i) {
         //     for (auto j=0; j<oepresults[i].size(); ++j) {
         //         cout << oepresults[i][j] << ' ';
@@ -246,7 +246,7 @@ namespace ENCRYPTO {
             for (uint32_t j=0; j<cliattributes; ++j) {
                 outputs[i][j+svrattributes] = oepresults[i][j];
             }
-            cout << tempequaltags[oepindices[i]] << ' ' << oeptagresults[i][0] << endl;
+            // cout << tempequaltags[oepindices[i]] << ' ' << oeptagresults[i][0] << endl;
             equaltags[i] = tempequaltags[oepindices[i]] ^ ((bool)(oeptagresults[i][0] & 1));
         }
 
@@ -254,7 +254,7 @@ namespace ENCRYPTO {
 
         context.total_time += (end_time - start_time).count();
         context.comm_cost += rolecontext.comm_cost;
-        cout << "finished join" << endl;
+        // cout << "finished join" << endl;
     }
 
     void JoinClient(vector<uint32_t> joinkeyid, vector<vector<uint32_t>> tuples,
@@ -332,7 +332,7 @@ namespace ENCRYPTO {
         context.total_time += (end_time - start_time).count();
         context.comm_cost += rolecontext.comm_cost;
 
-        cout << "finished join" << endl;
+        // cout << "finished join" << endl;
     }
 
 

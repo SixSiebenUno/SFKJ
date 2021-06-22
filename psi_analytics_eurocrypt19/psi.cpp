@@ -281,11 +281,17 @@ void testjoin(ENCRYPTO::PsiAnalyticsContext config) {
 
   vector<bool> et;
 
+  config.comm_cost = 0;
+  config.total_time = 0;
+
   if (config.role == SERVER) {
     JoinServer({0}, Atuples, outputs, et, config);
   } else {
     JoinClient({0}, Btuples, Atuples, outputs, et, config);
   }
+
+  cout << "communication cost until now = " << config.comm_cost / 1024.0 / 1024 << " MB" <<endl;
+  cout << "time cost until now = " << config.total_time / CLOCKS_PER_SEC << " s" <<endl;
 
   for (auto i=0; i<outputs.size(); ++i) {
     for (auto j=0; j<outputs[i].size(); ++j) {

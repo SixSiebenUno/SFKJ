@@ -198,7 +198,7 @@ namespace ENCRYPTO {
     // OEP with correct lines
     cout << "oep phase" << endl;
         uint32_t invordersize = *max_element(orders.begin(), orders.end());
-        cout << orders.size() << ' ' << invordersize << ' ' << *min_element(orders.begin(), orders.end()) << endl;
+        // cout << orders.size() << ' ' << invordersize << ' ' << *min_element(orders.begin(), orders.end()) << endl;
         vector<uint32_t> invorders(invordersize + 10);
         for (auto i=0; i<orders.size(); ++i) {
             if (orders[i] != -1) {
@@ -211,9 +211,9 @@ namespace ENCRYPTO {
         for (auto i=0; i<outputsize; ++i) {
             oepindices[i] = invorders[keymapid[joinkey[i]]];
         }
-        for (auto i=0; i<outputsize; ++i) {
-            cout << i << ' ' << tuples[i][joinkeyid[0]] << ' ' << oepindices[i] << endl;
-        }
+        // for (auto i=0; i<outputsize; ++i) {
+        //     cout << i << ' ' << tuples[i][joinkeyid[0]] << ' ' << oepindices[i] << endl;
+        // }
         vector<vector<uint32_t>> oepresults;
         vector<vector<uint32_t>> oeptagresults;
 

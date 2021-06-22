@@ -19,7 +19,7 @@
 #include "abycore/aby/abyparty.h"
 #include "abycore/sharing/boolsharing.h"
 #include "abycore/sharing/sharing.h"
-
+#include <vector>
 using namespace osuCrypto;
 
 namespace ENCRYPTO{
@@ -158,11 +158,11 @@ void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_
         M = N;
     }
 
-    int32_t* indicesCount = new int32_t[M]();
+    vector<int32_t> indicesCount(M);
     for (int i = 0; i < oriM; i++)
         indicesCount[indices[i]]++;
     vector<uint32_t> firstPermu(M);
-    bool* dummyTag = new bool[M];
+    vector<bool> dummyTag(M);
     int32_t dummyIndex = 0, fPIndex = 0;
     for(int32_t i=0;i<M;i++) {
         if (indicesCount[i] > 0) {
@@ -394,14 +394,14 @@ void OEPClient(std::vector< std::vector<uint32_t> > weights, std::vector< std::v
 }
 
 // The function is to generate selection bits with given permutation indices
-void permutationToBits(int* permuIndices, int size, bool* bits)
+void permutationToBits(vector<int> permuIndices, int size, bool* bits)
 {
     if (size == 2)
         bits[0] = permuIndices[0];
     if (size <= 2)
         return;
 
-    int* invPermuIndices = new int[size];
+    vector<int> invPermuIndices(size);
     for (int i = 0; i < size; i++)
         invPermuIndices[permuIndices[i]] = i;
 
@@ -410,8 +410,8 @@ void permutationToBits(int* permuIndices, int size, bool* bits)
     // Solve the edge coloring problem
 
     // flag=0: non-specified; flag=1: upperNetwork; flag=2: lowerNetwork
-    char* leftFlag = new char[size]();
-    char* rightFlag = new char[size]();
+    vector<char> leftFlag(size);
+    vector<char> rightFlag(size);
     int rightPointer = size - 1;
     int leftPointer;
     while (rightFlag[rightPointer] == 0)
@@ -443,7 +443,6 @@ void permutationToBits(int* permuIndices, int size, bool* bits)
             rightPointer = rightPointer & 1 ? rightPointer - 1 : rightPointer + 1;
         }
     }
-    delete[] invPermuIndices;
 
     // Determine bits on left gates
     int halfSize = size / 2;
@@ -460,21 +459,17 @@ void permutationToBits(int* permuIndices, int size, bool* bits)
     if (odd)
         bits[rightGateIndex + halfSize - 1] = rightFlag[size - 2] == 1;
 
-    delete[] leftFlag;
-    delete[] rightFlag;
-
     // Compute upper network
-    int* upperIndices = new int[halfSize];
+    vector<int> upperIndices(halfSize);
     for (int i = 0; i < halfSize - 1 + odd; i++)
         upperIndices[i] = permuIndices[2 * i + bits[rightGateIndex + i]] / 2;
     if (!odd)
         upperIndices[halfSize - 1] = permuIndices[size - 2] / 2;
     permutationToBits(upperIndices, halfSize, bits + upperIndex);
-    delete[] upperIndices;
 
     // Compute lower network
     int lowerSize = halfSize + odd;
-    int* lowerIndices = new int[lowerSize];
+    vector<int> lowerIndices(lowerSize);
     for (int i = 0; i < halfSize - 1 + odd; i++)
         lowerIndices[i] = permuIndices[2 * i + 1 - bits[rightGateIndex + i]] / 2;
     if (odd)
@@ -482,7 +477,6 @@ void permutationToBits(int* permuIndices, int size, bool* bits)
     else
         lowerIndices[halfSize - 1] = permuIndices[2 * halfSize - 1] / 2;
     permutationToBits(lowerIndices, lowerSize, bits + lowerIndex);
-    delete[] lowerIndices;
 
 }
 
@@ -499,8 +493,8 @@ void obliviousPermutation(vector< vector<uint32_t> > weights, vector< uint32_t >
     uint32_t weightlen = weights[0].size();
     uint32_t ng = estimateGates(neles);
     vector<uint32_t> sbits(ng);
-    bool* temp_sbits = new bool[ng * 2]();
-    int* temp_indices = new int[indices.size() * 2]();
+    bool temp_sbits[ng * 2];
+    vector<int> temp_indices (indices.size() * 2);
 
     // SERVER provides selection bits for gate
     // cout << "permuitation bits" << ' ' << neles << ' ' << ng << endl;;

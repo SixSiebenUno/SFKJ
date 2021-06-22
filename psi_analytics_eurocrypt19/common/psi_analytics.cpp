@@ -523,6 +523,7 @@ void oblivExtTranfer(std::vector<uint32_t> m0, std::vector<uint32_t> m1, std::ve
         sender.sendChosen(sendMessages, prng, senderChl);
         m0 = r3; m1 = r4;
         context.comm_cost += sendMessages.size();
+        cout << "size 1: " << sendMessages.size() << endl;
         senderChl.close();
 
         Channel recverChl = Session(ios, (context.address + ":" + std::to_string(context.port)), SessionMode::Client).addChannel();
@@ -542,6 +543,8 @@ void oblivExtTranfer(std::vector<uint32_t> m0, std::vector<uint32_t> m1, std::ve
             m1[i] = rev2;
         }
         context.comm_cost += messages.size();
+
+        cout << "size 2 : " << messages.size() << endl;
         recverChl.close();
     } else {
         Channel recverChl = Session(ios, (context.address + ":" + std::to_string(context.port)), SessionMode::Client).addChannel();
@@ -561,6 +564,8 @@ void oblivExtTranfer(std::vector<uint32_t> m0, std::vector<uint32_t> m1, std::ve
             m1[i] = rev2;
         }
         context.comm_cost += messages.size();
+
+        cout << "size 3 : " << messages.size() << endl;
         recverChl.close();
 
         Channel senderChl = Session(ios, (context.address + ":" + std::to_string(context.port)), SessionMode::Server).addChannel();
@@ -571,6 +576,8 @@ void oblivExtTranfer(std::vector<uint32_t> m0, std::vector<uint32_t> m1, std::ve
         sender.sendChosen(sendMessages, prng, senderChl);
         m0 = r3; m1 = r4;
         context.comm_cost += sendMessages.size();
+
+        cout << "size 4 : " << sendMessages.size() << endl;
         senderChl.close();
     }
     mr = m0;

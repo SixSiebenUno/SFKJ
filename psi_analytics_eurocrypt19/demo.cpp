@@ -31,6 +31,7 @@ using namespace std;
 using namespace ENCRYPTO;
 
 void ServerClientSync(ENCRYPTO::PsiAnalyticsContext context) {
+  cout << "check server client linkage" << endl;
   std::unique_ptr<CSocket> sock = ENCRYPTO::EstablishConnection(context.address, context.port, static_cast<e_role>(context.role));
   uint8_t value = 0;
   if (context.role == SERVER) {
@@ -39,6 +40,7 @@ void ServerClientSync(ENCRYPTO::PsiAnalyticsContext context) {
     sock -> Receive(&value, sizeof(value));
   }
   sock->Close();
+  cout << "check server client linkage ended" << endl;
   return;
 }
 

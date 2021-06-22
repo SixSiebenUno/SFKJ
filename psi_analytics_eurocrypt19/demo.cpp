@@ -711,6 +711,9 @@ void PuriDemo(ENCRYPTO::PsiAnalyticsContext config) {
 int main(int argc, char **argv) {
   auto config = read_test_options(argc, argv);
 
+  config.comm_cost = 0;
+  config.total_time = 0;
+
   // testsharedjoin(config);
 
   // MovieLensDemo(config);
@@ -721,8 +724,8 @@ int main(int argc, char **argv) {
   config.total_time = 0;
 
   // PlaintextMovieLensDemo(config);
-  cout << endl;
-  PlaintextTPCHDemo(config);
+  // cout << endl;
+  // PlaintextTPCHDemo(config);
 
   // PuriDemo(config);
 

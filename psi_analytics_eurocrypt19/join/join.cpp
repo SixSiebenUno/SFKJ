@@ -194,7 +194,6 @@ namespace ENCRYPTO {
         // cout << "PSI phase" << endl;
     // PSI
         PSIpayload(sortedjoinkey, tempweights, rolecontext, orders, tempequaltags);
-        cout << "comm cost now = " << rolecontext.comm_cost << endl;
 
     // OEP with correct lines
     // cout << "oep phase" << endl;
@@ -219,10 +218,8 @@ namespace ENCRYPTO {
         vector<vector<uint32_t>> oeptagresults;
 
         OEPServer(oepindices, oepresults, rolecontext, S_ARITH);
-        cout << "comm cost now = " << rolecontext.comm_cost << endl;
         // cout << "oep tag server" << endl;
         OEPServer(oepindices, oeptagresults, rolecontext, S_BOOL);
-        cout << "comm cost now = " << rolecontext.comm_cost << endl;
 
         for (auto i=0; i<outputsize; ++i) {
             for (auto j=0; j<cliattributes; ++j) {

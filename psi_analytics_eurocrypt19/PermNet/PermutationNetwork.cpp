@@ -130,8 +130,8 @@ uint64_t permutation_network(e_role role, const std::string& address, uint16_t p
 
 	party->ExecCircuit();
 	uint64_t comm_size = party->GetSentData(P_ONLINE) + party->GetReceivedData(P_ONLINE);
-	cout << "P_TOTAL " << ' ' << party->GetSentData(P_TOTAL) << ' ' << party->GetReceivedData(P_TOTAL) << endl;
-	cout << "P_ONLINE " << ' ' << party->GetSentData(P_ONLINE) << ' ' << party->GetReceivedData(P_ONLINE) << endl;
+	// cout << "P_TOTAL " << ' ' << party->GetSentData(P_TOTAL) << ' ' << party->GetReceivedData(P_TOTAL) << endl;
+	// cout << "P_ONLINE " << ' ' << party->GetSentData(P_ONLINE) << ' ' << party->GetReceivedData(P_ONLINE) << endl;
 
 	values.resize(neles);
 	for (uint32_t i=0; i<neles; ++i) {

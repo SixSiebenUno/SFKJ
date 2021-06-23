@@ -611,7 +611,7 @@ void PSIpayload(const std::vector<std::uint64_t> &inputs, std::vector<std::vecto
   }
   context.comm_cost += sock->getSndCnt() + sock->getRcvCnt();
   sock->Close();
-  cout << myneles << ' ' << herneles << ' ' << weightlen << endl;
+  // cout << myneles << ' ' << herneles << ' ' << weightlen << endl;
 
   // cout << "my info " << endl;
   // for (auto i=0; i<inputs.size(); ++i) {
@@ -633,7 +633,7 @@ void PSIpayload(const std::vector<std::uint64_t> &inputs, std::vector<std::vecto
   context.polynomialbytelength = context.polynomialsize * sizeof(std::uint64_t);
   
   // create hash tables from the elements
-  cout << "OPPRF period" << endl;
+  // cout << "OPPRF period" << endl;
   std::vector<uint64_t> bins;
   if (context.role == SERVER) {
     OpprgPsiPayloadClient(inputs, bins, weightlen, weights, orders, context);
@@ -651,7 +651,7 @@ void PSIpayload(const std::vector<std::uint64_t> &inputs, std::vector<std::vecto
   else {
     abyaddress = context.address;
   } 
-  cerr << abyaddress << ' ' << context.port << ' ' << context.role << endl;
+  // cerr << abyaddress << ' ' << context.port << ' ' << context.role << endl;
   ABYParty party(static_cast<e_role>(context.role), abyaddress, context.port, LT, 64,
                  context.nthreads);
   auto bc = dynamic_cast<BooleanCircuit *>(
@@ -1072,10 +1072,8 @@ void OpprgPsiPayloadServer(const std::vector<uint64_t> &elements, std::vector<ui
     assert(tmp.size() == content_of_bins.size());
   }
 
-  cerr << "guess boom here" << endl;
   std::unique_ptr<CSocket> sock =
       EstablishConnection(context.address, context.port, static_cast<e_role>(context.role));
-  cerr << "no boom here" << endl;
 
   InterpolatePolynomials(polynomials, content_of_bins, masks, context);
 

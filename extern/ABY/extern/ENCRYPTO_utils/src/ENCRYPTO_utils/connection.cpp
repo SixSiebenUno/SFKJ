@@ -107,11 +107,11 @@ std::unique_ptr<CSocket> Connect(const std::string& address, uint16_t port) {
 std::unique_ptr<CSocket> Listen(const std::string& address, uint16_t port) {
 	auto listen_socket = std::make_unique<CSocket>();
 	if (!listen_socket->Bind(address, port)) {
-		cout << "not bind" << endl;
+		std::cout << "not bind" << std::endl;
 		return nullptr;
 	}
 	if (!listen_socket->Listen()) {
-		cout << "not listen" << endl;
+		std::cout << "not listen" << std::endl;
 		return nullptr;
 	}
 	return listen_socket->Accept();

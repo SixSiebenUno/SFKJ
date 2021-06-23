@@ -182,7 +182,7 @@ void DuplicationNetwork(std::vector< std::vector<uint32_t> > &values, std::vecto
         }
     }
 
-    cout << "start " < endl;
+    cout << "start " << endl;
 
     party->ExecCircuit();
 

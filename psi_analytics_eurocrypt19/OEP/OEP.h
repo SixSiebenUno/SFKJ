@@ -20,4 +20,6 @@ void obliviousPermutation(vector< vector<uint32_t> > weights, vector< uint32_t >
                 vector< vector<uint32_t> > &value, ENCRYPTO::PsiAnalyticsContext &context, 
                 e_sharing type);
 void obliviousPermutation(ENCRYPTO::PsiAnalyticsContext &context);
+void DuplicationNetwork(std::vector< std::vector<uint32_t> > &values, std::vector< bool > dummyTag, 
+                        ENCRYPTO::PsiAnalyticsContext &context, e_sharing type);
 };

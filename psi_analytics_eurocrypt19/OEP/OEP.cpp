@@ -142,6 +142,58 @@ void MergeTags(std::vector<bool> tag1, std::vector<bool> tag2, std::vector<bool>
     return;
 }
 
+void DuplicationNetwork(std::vector< std::vector<uint32_t> > &values, std::vector< bool > dummyTag, 
+                        ENCRYPTO::PsiAnalyticsContext &context, e_sharing type) {
+    e_role role = (e_role)context.role;
+	string address = (role == SERVER) ? "0.0.0.0" : context.address;
+    uint16_t port = context.port;
+	uint32_t bitlen = 32, secparam = 128, nthreads = 1, prot_version = 0;
+	e_mt_gen_alg mt_alg = MT_OT;
+	seclvl seclvl = get_sec_lvl(secparam);
+
+	ABYParty* party = new ABYParty(role, address, port, seclvl, bitlen, nthreads, mt_alg, 4000000);
+	vector<Sharing*>& sharings = party->GetSharings();
+	BooleanCircuit* yc = (BooleanCircuit*) sharings[S_YAO]->GetCircuitBuildRoutine();
+	BooleanCircuit* bc = (BooleanCircuit*) sharings[S_BOOL]->GetCircuitBuildRoutine();
+	BooleanCircuit* ac = (BooleanCircuit*) sharings[S_ARITH]->GetCircuitBuildRoutine();
+
+    uint32_t neles = values.size(), weightcnt = values[0].size();
+    vector<share*> invals(neles), muxtags(neles), outvals(neles);
+
+    for (auto i=0; i<neles; ++i) {
+        if (type == S_ARITH) {
+            invals[i] = ac->PutSharedSIMDINGate(weightcnt, values[i].data(), 32);
+            invals[i] = bc->PutA2BGate(invals[i], yc);
+        } else {
+            invals[i] = bc->PutSharedSIMDINGate(weightcnt, values[i].data(), 32);
+        }
+        muxtags[i] = bc->PutINGate((uint32_t)dummyTag[i], 1, SERVER);
+        muxtags[i] = bc->PutRepeaterGate(weightcnt, muxtags[i]);
+    }
+    for (auto i=1; i<neles; ++i) {
+        invals[i] = bc->PutMUXGate(invals[i-1], invals[i], muxtags[i]);
+    }
+    for (auto i=0; i<neles; ++i) {
+        if (type == S_ARITH) {
+            invals[i] = ac->PutB2AGate(invals[i]);
+            invals[i] = ac->PutSharedOUTGate(invals[i]);
+        } else {
+            invals[i] = bc->PutSharedOUTGate(invals[i]);
+        }
+    }
+
+    party->ExecCircuit();
+
+    for (auto i=0; i<neles; ++i) {
+        uint32_t *tmpvals, bitlen, nvals;
+        invals[i] -> get_clear_value_vec(&tmpvals, &bitlen, &nvals);
+        values[i].resize(weightcnt);
+        for (auto j=0; j<weightcnt; ++j) {
+            values[i][j] = tmpvals[j];
+        }
+    }
+}
+
 void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_t> > &outputs,
                ENCRYPTO::PsiAnalyticsContext &context, e_sharing type) {
     uint32_t N, M, weightcnt;
@@ -196,35 +248,8 @@ void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_
     cout << "first permutation" << endl;
     obliviousPermutation(weights, firstPermu, values, context, type);
 
-    auto OT_start_time = std::chrono::system_clock::now();
-
-    IOService ios;
-    Channel recverChl = Session(ios, (context.address + ":" + std::to_string(context.port)), SessionMode::Client).addChannel();
-    BitVector choicesOne(weightcnt), choicesZero(weightcnt);
-    PRNG prng(sysRandomSeed());
-    std::vector<block> messages(weightcnt);
-    IknpOtExtReceiver receiver;
-    for (auto i=0; i<weightcnt; ++i) {
-        choicesOne[i] = 1;
-        choicesZero[i] = 0;
-    }
     cout << "duplication" << endl;
-    for (auto id = 0; id < M; ++id) {
-        cout << id << ' ' << M << endl;
-        BitVector choices = dummyTag[id] ? choicesOne : choicesZero;
-        receiver.receiveChosen(choices, messages, prng, recverChl);
-        if (type == S_ARITH) {
-            for (auto i=0; i<weightcnt; ++i) {
-                values[id][i] = values[id - dummyTag[id]][i] + (((uint32_t*)(&messages[i]))[0]);
-            }
-        } else if (type == S_BOOL) {
-            for (auto i=0; i<weightcnt; ++i) {
-                values[id][i] = values[id - dummyTag[id]][i] ^ (((uint32_t*)(&messages[i]))[0]);
-            }
-        }
-    }
-    auto OT_end_time = std::chrono::system_clock::now();
-    // cout << "OT " << M * weightcnt << " elements, take " << 1.0 * (OT_end_time - OT_start_time).count() / CLOCKS_PER_SEC << "s, transmit " << recverChl.getTotalDataRecv() / 1024.0 / 1024.0 << "MB" << endl;
+    DuplicationNetwork(values, dummyTag, context, type);
 
     vector<uint32_t> secondPermu(M), locid(M);
     vector<bool> usedLoc(M);
@@ -328,42 +353,10 @@ void OEPClient(std::vector< std::vector<uint32_t> > weights, std::vector< std::v
     cout << "first permutation" << endl;
     obliviousPermutation(extendedWeights, empty_indices, values, context, type);
 
-    auto OT_start_time = std::chrono::system_clock::now();
-
     cout << "duplication" << endl;
-    IOService ios;
-    Channel senderChl = Session(ios, ("0.0.0.0:" + std::to_string(context.port)), SessionMode::Server).addChannel();
-	std::vector<std::array<block, 2>> sendMessages(weightcnt);
-    std::vector<uint32_t> rndWeights(weightcnt);
-    PRNG prng(sysRandomSeed());
-	IknpOtExtSender sender;
-    for (auto id=0; id<M; ++id) {
-        uint32_t choiceZero, choiceOne;
-        for (auto i=0; i<weightcnt; ++i) {
-            rndWeights[i] = prng.get();
-            if (type == S_ARITH) {
-                choiceZero = values[id][i] - rndWeights[i];
-                if (id == 0) {
-                    choiceOne = values[id][i] - rndWeights[i];
-                } else {
-                    choiceOne = values[id-1][i] - rndWeights[i];
-                }
-            } else if (type == S_BOOL) {
-                choiceZero = values[id][i] ^ rndWeights[i];
-                if (id == 0) {
-                    choiceOne = values[id][i] ^ rndWeights[i];
-                } else {
-                    choiceOne = values[id-1][i] ^ rndWeights[i];
-                }
-            }
-            sendMessages[i] = {toBlock(choiceZero), toBlock(choiceOne)};
-        }
-        sender.sendChosen(sendMessages, prng, senderChl);
-        values[id] = rndWeights;
-    }    
-    auto OT_end_time = std::chrono::system_clock::now();
-    // cout << "OT " << M * weightcnt << " elements, take " << 1.0 * (OT_end_time - OT_start_time).count() / CLOCKS_PER_SEC << "s, transmit " << senderChl.getTotalDataSent() / 1024.0 / 1024.0 << "MB" << endl;
 
+    vector<bool> dummyTag(M);
+    DuplicationNetwork(values, dummyTag, context, type);
 
     std::vector< std::vector<uint32_t> > values2(M);
     outputs.resize(M);

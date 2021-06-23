@@ -145,7 +145,7 @@ void MergeTags(std::vector<bool> tag1, std::vector<bool> tag2, std::vector<bool>
 void DuplicationNetwork(std::vector< std::vector<uint32_t> > &values, std::vector< bool > dummyTag, 
                         ENCRYPTO::PsiAnalyticsContext &context, e_sharing type) {
     e_role role = (e_role)context.role;
-	string address = (role == SERVER) ? "0.0.0.0" : context.address;
+    string address = ((context.role == SERVER) ? "0.0.0.0" : context.address);
     uint16_t port = context.port;
 	uint32_t bitlen = 32, secparam = 128, nthreads = 1, prot_version = 0;
 	e_mt_gen_alg mt_alg = MT_OT;
@@ -183,7 +183,7 @@ void DuplicationNetwork(std::vector< std::vector<uint32_t> > &values, std::vecto
     }
 
     cout << "start " << endl;
-
+    cout << "party size " << party->GetTotalDepth() << ' ' << party->GetTotalGates() << endl;
     party->ExecCircuit();
 
     cout << "end execute" << endl;

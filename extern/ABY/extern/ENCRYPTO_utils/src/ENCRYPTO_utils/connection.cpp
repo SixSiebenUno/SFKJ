@@ -99,7 +99,6 @@ std::unique_ptr<CSocket> Connect(const std::string& address, uint16_t port) {
 	for (int i = 0; i < RETRY_CONNECT; i++) {
 		if (socket->Connect(address, port))
 			return socket;
-		SleepMiliSec(100);
 	}
 	std::cerr << "Connect failed due to timeout!\n";
 	return nullptr;
@@ -108,9 +107,11 @@ std::unique_ptr<CSocket> Connect(const std::string& address, uint16_t port) {
 std::unique_ptr<CSocket> Listen(const std::string& address, uint16_t port) {
 	auto listen_socket = std::make_unique<CSocket>();
 	if (!listen_socket->Bind(address, port)) {
+		cout << "not bind" << endl;
 		return nullptr;
 	}
 	if (!listen_socket->Listen()) {
+		cout << "not listen" << endl;
 		return nullptr;
 	}
 	return listen_socket->Accept();

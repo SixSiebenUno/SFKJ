@@ -633,6 +633,7 @@ void PSIpayload(const std::vector<std::uint64_t> &inputs, std::vector<std::vecto
   context.polynomialbytelength = context.polynomialsize * sizeof(std::uint64_t);
   
   // create hash tables from the elements
+  cout << "OPPRF period" << endl;
   std::vector<uint64_t> bins;
   if (context.role == SERVER) {
     OpprgPsiPayloadClient(inputs, bins, weightlen, weights, orders, context);
@@ -1070,8 +1071,10 @@ void OpprgPsiPayloadServer(const std::vector<uint64_t> &elements, std::vector<ui
     assert(tmp.size() == content_of_bins.size());
   }
 
+  cout << "guess boom here" << endl;
   std::unique_ptr<CSocket> sock =
       EstablishConnection(context.address, context.port, static_cast<e_role>(context.role));
+  cout << "no boom here" << endl;
 
   InterpolatePolynomials(polynomials, content_of_bins, masks, context);
 

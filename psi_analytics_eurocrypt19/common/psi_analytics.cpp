@@ -611,7 +611,7 @@ void PSIpayload(const std::vector<std::uint64_t> &inputs, std::vector<std::vecto
   }
   context.comm_cost += sock->getSndCnt() + sock->getRcvCnt();
   sock->Close();
-  // cout << myneles << ' ' << herneles << ' ' << weightlen << endl;
+  cout << myneles << ' ' << herneles << ' ' << weightlen << endl;
 
   // cout << "my info " << endl;
   // for (auto i=0; i<inputs.size(); ++i) {
@@ -642,6 +642,7 @@ void PSIpayload(const std::vector<std::uint64_t> &inputs, std::vector<std::vecto
 
   // update equal tag
 
+  cout << "init ABY" << endl;
   // instantiate ABY
   ABYParty party(static_cast<e_role>(context.role), context.address, context.port, LT, 64,
                  context.nthreads);

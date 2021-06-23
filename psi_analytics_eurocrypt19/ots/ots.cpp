@@ -124,7 +124,7 @@ std::vector<std::vector<std::uint64_t>> ot_sender(
 
   std::string name = "n";
   osuCrypto::IOService ios;
-  osuCrypto::Session ep(ios, context.address, context.port + 1, osuCrypto::SessionMode::Server,
+  osuCrypto::Session ep(ios, "0.0.0.0", context.port + 1, osuCrypto::SessionMode::Server,
                         name);
   auto sendChl = ep.addChannel(name, name);
 

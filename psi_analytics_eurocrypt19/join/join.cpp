@@ -283,7 +283,7 @@ namespace ENCRYPTO {
         cout << "establish ended" << endl;
         uint64_t outputattributes = svrattributes + cliattributes;
 
-        // cout << "communicate round finished " << outputsize << ' ' << outputattributes << endl;
+        cout << "communicate round finished " << outputsize << ' ' << outputattributes << endl;
 
         std::vector<std::vector<uint32_t>> tempweights;
         std::vector<bool> tempequaltags;
@@ -294,6 +294,7 @@ namespace ENCRYPTO {
             tempweights[i] = tuples[i];
         }
     // PSI
+    cout << "psi phase" << endl;
         std::vector<int32_t> orders;
         PSIpayload(joinkey, tempweights, rolecontext, orders, tempequaltags);
 
@@ -304,7 +305,7 @@ namespace ENCRYPTO {
         }
 
     // OEP
-    // cout << "oep phase" << endl;
+    cout << "oep phase" << endl;
         vector<vector<uint32_t>> oepresults, oeptagresults;
         OEPClient(tempweights, oepresults, rolecontext, S_ARITH);
         OEPClient(oepeqtags, oeptagresults, rolecontext, S_BOOL);

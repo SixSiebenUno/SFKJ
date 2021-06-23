@@ -671,7 +671,7 @@ void LinearDemo(PsiAnalyticsContext &config) {
 
 void PuriDemo(ENCRYPTO::PsiAnalyticsContext config) {
     ServerClientSync(config);
-    uint32_t neles = 1000, D = 16, nreal = 0;
+    uint32_t neles = 5000, D = 7, nreal = 0;
     double epi = 1;
     vector<vector<uint32_t>> vals (neles);
     vector<bool> tags (neles);

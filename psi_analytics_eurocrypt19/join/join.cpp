@@ -219,7 +219,7 @@ namespace ENCRYPTO {
         vector<vector<uint32_t>> oepresults;
         vector<vector<uint32_t>> oeptagresults;
 
-        OEPServer(oepindices, oepresults, rolecontext, S_ARITH);
+        OEPServer(oepindices, oepresults, rolecontext, S_BOOL);
         // cout << "oep tag server" << endl;
         OEPServer(oepindices, oeptagresults, rolecontext, S_BOOL);
 

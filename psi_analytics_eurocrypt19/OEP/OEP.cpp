@@ -210,7 +210,7 @@ void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_
     }
     cout << "duplication" << endl;
     for (auto id = 0; id < M; ++id) {
-        // cout << id << ' ' << M << endl;
+        cout << id << ' ' << M << endl;
         BitVector choices = dummyTag[id] ? choicesOne : choicesZero;
         receiver.receiveChosen(choices, messages, prng, recverChl);
         if (type == S_ARITH) {

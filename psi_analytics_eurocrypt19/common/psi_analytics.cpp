@@ -645,7 +645,14 @@ void PSIpayload(const std::vector<std::uint64_t> &inputs, std::vector<std::vecto
 
   cout << "init ABY" << endl;
   // instantiate ABY
-  ABYParty party(static_cast<e_role>(context.role), context.address, context.port, LT, 64,
+  std::string abyaddress;
+  if (context.role == SERVER) {
+    abyaddress = "0.0.0.0";
+  }
+  else {
+    abyaddress = context.address;
+  } 
+  ABYParty party(static_cast<e_role>(context.role), abyaddress, context.port, LT, 64,
                  context.nthreads);
   party.ConnectAndBaseOTs();
   auto bc = dynamic_cast<BooleanCircuit *>(

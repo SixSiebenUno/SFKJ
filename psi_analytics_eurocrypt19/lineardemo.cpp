@@ -408,8 +408,6 @@ void OULADDemo(PsiAnalyticsContext &config) {
   vector<vector<uint32_t>> r1, r2;
   vector<bool> et;
 
-  cout << "111" << endl;
-
   if (config.role == SERVER) {
       JoinServer({0}, fact, r1, et, config);
   } else {
@@ -418,6 +416,8 @@ void OULADDemo(PsiAnalyticsContext &config) {
   cout << "total communication cost = " << config.comm_cost / 1024.0 / 1024 << " MB" <<endl;
   cout << "total time cost = " << config.total_time / CLOCKS_PER_SEC << " s" <<endl;
   
+  cout << endl << endl << endl;
+
   if (config.role == SERVER) {
       JoinServer({1}, fact, r2, et, config);
   } else {

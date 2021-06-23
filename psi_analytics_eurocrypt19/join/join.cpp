@@ -193,12 +193,12 @@ namespace ENCRYPTO {
         std::vector<bool> tempequaltags;
         std::vector<int32_t> orders;
 
-        // cout << "PSI phase" << endl;
+        cout << "PSI phase" << endl;
     // PSI
         PSIpayload(sortedjoinkey, tempweights, rolecontext, orders, tempequaltags);
 
     // OEP with correct lines
-    // cout << "oep phase" << endl;
+    cout << "oep phase" << endl;
         uint32_t invordersize = *max_element(orders.begin(), orders.end());
         // cout << orders.size() << ' ' << invordersize << ' ' << *min_element(orders.begin(), orders.end()) << endl;
         vector<uint32_t> invorders(invordersize + 10);
@@ -238,6 +238,7 @@ namespace ENCRYPTO {
         // }
 
     // connect two tables
+    cout << "connect two tables" << endl;
         outputs.resize(outputsize);
         equaltags.resize(outputsize);
         for (auto i=0; i<outputsize; ++i) {
@@ -256,7 +257,7 @@ namespace ENCRYPTO {
 
         context.total_time += (end_time - start_time) ;
         context.comm_cost += rolecontext.comm_cost;
-        // cout << "finished join" << endl;
+        cout << "finished join" << endl;
     }
 
     void JoinClient(vector<uint32_t> joinkeyid, vector<vector<uint32_t>> tuples,
@@ -283,7 +284,7 @@ namespace ENCRYPTO {
         cout << "establish ended" << endl;
         uint64_t outputattributes = svrattributes + cliattributes;
 
-        cout << "communicate round finished " << outputsize << ' ' << outputattributes << endl;
+        // cout << "communicate round finished " << outputsize << ' ' << outputattributes << endl;
 
         std::vector<std::vector<uint32_t>> tempweights;
         std::vector<bool> tempequaltags;
@@ -319,6 +320,7 @@ namespace ENCRYPTO {
         // }
 
     // connect two tables
+    cout << "connect two tables" << endl;
         outputs.resize(outputsize);
         equaltags.resize(outputsize);
         for (auto i=0; i<outputsize; ++i) {
@@ -337,7 +339,7 @@ namespace ENCRYPTO {
         context.total_time += (end_time - start_time) ;
         context.comm_cost += rolecontext.comm_cost;
 
-        // cout << "finished join" << endl;
+        cout << "finished join" << endl;
     }
 
 

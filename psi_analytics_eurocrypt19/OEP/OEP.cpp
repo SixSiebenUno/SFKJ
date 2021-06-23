@@ -208,7 +208,7 @@ void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_
         choicesOne[i] = 1;
         choicesZero[i] = 0;
     }
-    // cout << "duplication" << endl;
+    cout << "duplication" << endl;
     for (auto id = 0; id < M; ++id) {
         // cout << id << ' ' << M << endl;
         BitVector choices = dummyTag[id] ? choicesOne : choicesZero;
@@ -254,7 +254,7 @@ void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_
         values2[i].resize(weightcnt);
     }
 
-    // cout << "second permutation" << endl;
+    cout << "second permutation" << endl;
     obliviousPermutation(weights, secondPermu, values2, context, type);
 
     if (type == S_ARITH) {
@@ -310,7 +310,7 @@ void OEPClient(std::vector< std::vector<uint32_t> > weights, std::vector< std::v
     sock->Send(&N, sizeof(uint32_t));
     sock->Send(&weightcnt, sizeof(uint32_t));
     sock->Close();
-    // cout << "oep size" << N << ' ' << M << ' ' << weightcnt << endl;
+    cout << "oep size" << N << ' ' << M << ' ' << weightcnt << endl;
     uint32_t oriM = M;
     if (M < N) {
         M = N;
@@ -325,9 +325,12 @@ void OEPClient(std::vector< std::vector<uint32_t> > weights, std::vector< std::v
         }
     }
     std::vector<uint32_t> empty_indices(M);
+    cout << "first permutation" << endl;
     obliviousPermutation(extendedWeights, empty_indices, values, context, type);
 
     auto OT_start_time = std::chrono::system_clock::now();
+
+    cout << "duplication" << endl;
     IOService ios;
     Channel senderChl = Session(ios, ("0.0.0.0:" + std::to_string(context.port)), SessionMode::Server).addChannel();
 	std::vector<std::array<block, 2>> sendMessages(weightcnt);
@@ -369,6 +372,7 @@ void OEPClient(std::vector< std::vector<uint32_t> > weights, std::vector< std::v
         outputs[i].resize(weightcnt);
     }
 
+    cout << "second permutation" << endl;
     obliviousPermutation(values, empty_indices, values2, context, type);
 
     for (auto i=0; i<M; ++i) {
@@ -520,7 +524,7 @@ void obliviousPermutation(vector< vector<uint32_t> > weights, vector< uint32_t >
 // It is a test run for oblivious permutation function
 void obliviousPermutation(ENCRYPTO::PsiAnalyticsContext &context) {
     e_role role = (e_role)context.role;
-	string address = context.address;
+    string address = ((context.role == SERVER) ? "0.0.0.0" : context.address);
     uint16_t port = context.port;
 
 	uint32_t bitlen = 32, secparam = 128, nthreads = 1, prot_version = 0;

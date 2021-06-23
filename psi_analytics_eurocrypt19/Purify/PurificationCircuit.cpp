@@ -8,7 +8,7 @@
 
 void test(ENCRYPTO::PsiAnalyticsContext context) {
     e_role role = (e_role)context.role;
-	string address = context.address;
+    string address = ((context.role == SERVER) ? "0.0.0.0" : context.address);
     uint16_t port = context.port;
 	uint32_t bitlen = 32, secparam = 128, nthreads = 1, prot_version = 0;
 	e_mt_gen_alg mt_alg = MT_OT;
@@ -46,7 +46,7 @@ void test(ENCRYPTO::PsiAnalyticsContext context) {
 void GenerateDPNoise(uint32_t length, uint32_t nele, uint32_t D, uint64_t J, double coef, ENCRYPTO::PsiAnalyticsContext &context) {
     assert(length >= nele * D);
     e_role role = (e_role)context.role;
-	string address = context.address;
+    string address = ((context.role == SERVER) ? "0.0.0.0" : context.address);
     uint16_t port = context.port;
 	uint32_t bitlen = 64, secparam = 128, nthreads = 1, prot_version = 0;
 	e_mt_gen_alg mt_alg = MT_OT;
@@ -188,7 +188,7 @@ void GenerateMultTriplet(uint32_t N, ENCRYPTO::PsiAnalyticsContext &context) {
     }
 
     e_role role = (e_role)context.role;
-	string address = context.address;
+    string address = ((context.role == SERVER) ? "0.0.0.0" : context.address);
     uint16_t port = context.port;
 	uint32_t bitlen = 32, secparam = 128, nthreads = 1, prot_version = 0;
 	e_mt_gen_alg mt_alg = MT_OT;
@@ -237,7 +237,7 @@ void GenerateDPNoise_float(uint32_t length, uint32_t J, float coef, float tauC, 
     }
 
     e_role role = (e_role)context.role;
-	string address = context.address;
+    string address = ((context.role == SERVER) ? "0.0.0.0" : context.address);
     uint16_t port = context.port;
 	uint32_t bitlen = 32, secparam = 128, nthreads = 1, prot_version = 0;
 	e_mt_gen_alg mt_alg = MT_OT;
@@ -312,7 +312,7 @@ void TestMultiWires(vector<vector<uint32_t>> &vals, uint32_t D, ENCRYPTO::PsiAna
     uint32_t halfn = (neles + 1) / 2;
 
     e_role role = (e_role)context.role;
-	string address = context.address;
+    string address = ((context.role == SERVER) ? "0.0.0.0" : context.address);
     uint16_t port = context.port;
 	uint32_t bitlen = 32, secparam = 128, nthreads = 1, prot_version = 0;
 	e_mt_gen_alg mt_alg = MT_OT;
@@ -363,7 +363,7 @@ void PurificationCircuit(vector<vector<uint32_t>> &vals, vector<bool> tags, ENCR
     uint32_t halfn = (neles + 1) / 2;
 
     e_role role = (e_role)context.role;
-	string address = context.address;
+    string address = ((context.role == SERVER) ? "0.0.0.0" : context.address);
     uint16_t port = context.port;
 	uint32_t bitlen = 32, secparam = 128, nthreads = 1, prot_version = 0;
 	e_mt_gen_alg mt_alg = MT_OT;
@@ -537,7 +537,7 @@ void PurificationCircuitMultiWires(vector<vector<uint32_t>> &vals, vector<bool> 
     uint32_t nvals = vals[0].size();
 
     e_role role = (e_role)context.role;
-	string address = context.address;
+    string address = ((context.role == SERVER) ? "0.0.0.0" : context.address);
     uint16_t port = context.port;
 	uint32_t bitlen = 32, secparam = 128, nthreads = 1, prot_version = 0;
 	e_mt_gen_alg mt_alg = MT_OT;
@@ -706,7 +706,7 @@ void CompactionCircuit(vector<vector<uint32_t>> &vals, vector<bool> &tags, ENCRY
     uint32_t logn = (uint32_t) ceil( log2(1.0 * neles) );
 
     e_role role = (e_role)context.role;
-	string address = context.address;
+    string address = ((context.role == SERVER) ? "0.0.0.0" : context.address);
     uint16_t port = context.port;
 	uint32_t bitlen = 32, secparam = 128, nthreads = 1, prot_version = 0;
 	e_mt_gen_alg mt_alg = MT_OT;
@@ -812,7 +812,7 @@ void DuplicationCircuit(uint32_t shrnreal, vector<vector<uint32_t>> &vals, vecto
     uint32_t logn = (uint32_t) ceil( log2(1.0 * neles) );
 
     e_role role = (e_role)context.role;
-	string address = context.address;
+    string address = ((context.role == SERVER) ? "0.0.0.0" : context.address);
     uint16_t port = context.port;
 	uint32_t bitlen = 32, secparam = 128, nthreads = 1, prot_version = 0;
 	e_mt_gen_alg mt_alg = MT_OT;
@@ -896,7 +896,7 @@ void HalfCopyCircuit(vector<vector<uint32_t>> &vals, vector<bool> &tags, ENCRYPT
     uint32_t nattr = vals[0].size();
 
     e_role role = (e_role)context.role;
-	string address = context.address;
+    string address = ((context.role == SERVER) ? "0.0.0.0" : context.address);
     uint16_t port = context.port;
 	uint32_t bitlen = 32, secparam = 128, nthreads = 1, prot_version = 0;
 	e_mt_gen_alg mt_alg = MT_OT;
@@ -963,7 +963,7 @@ void OutputCircuit(vector<vector<uint32_t>> &vals, ENCRYPTO::PsiAnalyticsContext
     uint32_t nattr = vals[0].size();
 
     e_role role = (e_role)context.role;
-	string address = context.address;
+    string address = ((context.role == SERVER) ? "0.0.0.0" : context.address);
     uint16_t port = context.port;
 	uint32_t bitlen = 64, secparam = 128, nthreads = 1, prot_version = 0;
 	e_mt_gen_alg mt_alg = MT_OT;

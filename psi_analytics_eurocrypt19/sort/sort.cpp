@@ -38,7 +38,7 @@ void bitonicsort(vector<vector<uint32_t>> &vals, ENCRYPTO::PsiAnalyticsContext c
     uint32_t nattr = vals[0].size();
 
     e_role role = (e_role)context.role;
-	string address = context.address;
+    string address = ((context.role == SERVER) ? "0.0.0.0" : context.address);
     uint16_t port = context.port;
 	uint32_t bitlen = 32, secparam = 128, nthreads = 1, prot_version = 0;
 	e_mt_gen_alg mt_alg = MT_OT;

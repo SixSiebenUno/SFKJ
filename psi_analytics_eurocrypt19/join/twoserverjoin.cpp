@@ -47,7 +47,7 @@ namespace ENCRYPTO {
         uint32_t halfn = (neles + 1) / 2;
 
         e_role role = (e_role)context.role;
-        string address = context.address;
+        string address = ((context.role == SERVER) ? "0.0.0.0" : context.address);
         uint16_t port = context.port;
         uint32_t bitlen = 32, secparam = 128, nthreads = 1, prot_version = 0;
         e_mt_gen_alg mt_alg = MT_OT;
@@ -224,7 +224,7 @@ namespace ENCRYPTO {
 
     void UpdateEQTag(vector<vector<uint32_t>> values, uint32_t id1, uint32_t id2, vector<bool> &eqtags, ENCRYPTO::PsiAnalyticsContext &context) {
         e_role role = (e_role)context.role;
-        string address = context.address;
+        string address = ((context.role == SERVER) ? "0.0.0.0" : context.address);
         uint16_t port = context.port;
         uint32_t bitlen = 32, secparam = 128, nthreads = 1, prot_version = 0;
         e_mt_gen_alg mt_alg = MT_OT;

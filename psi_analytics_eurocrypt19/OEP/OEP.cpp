@@ -255,7 +255,37 @@ void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_
     obliviousPermutation(weights, firstPermu, values, context, type);
 
     cerr << "duplication" << endl;
-    DuplicationNetwork(values, dummyTag, context, type);
+    // DuplicationNetwork(values, dummyTag, context, type);
+    auto OT_start_time = std::chrono::system_clock::now();
+    IOService ios;
+    Channel recverChl = Session(ios, (context.address + ":" + std::to_string(context.port)), SessionMode::Client).addChannel();
+    BitVector choices(M * weightcnt);
+    PRNG prng(sysRandomSeed());
+    std::vector<block> messages(M * weightcnt);
+    IknpOtExtReceiver receiver;
+    // cout << "duplication" << endl;
+    uint32_t choicesid = 0;
+    for (auto id = 0; id < M; ++id) {
+        for (auto j=0; j<weightcnt; ++j) {
+            choices[choicesid++] = dummyTag[id];
+        }  
+    }
+    receiver.receiveChosen(choices, messages, prng, recverChl);
+    choicesid = 0;
+    for (auto id=0; id<M; ++id) {
+        if (type == S_ARITH) {
+            for (auto i=0; i<weightcnt; ++i) {
+                values[id][i] = values[id - dummyTag[id]][i] + (((uint32_t*)(&messages[choicesid++]))[0]);
+            }
+        } else if (type == S_BOOL) {
+            for (auto i=0; i<weightcnt; ++i) {
+                values[id][i] = values[id - dummyTag[id]][i] ^ (((uint32_t*)(&messages[choicesid++]))[0]);
+            }
+        }
+    }
+
+    auto OT_end_time = std::chrono::system_clock::now();
+    // cout << "OT " << M * weightcnt << " elements, take " << 1.0 * (OT_end_time - OT_start_time).count() / CLOCKS_PER_SEC << "s, transmit " << recverChl.getTotalDataRecv() / 1024.0 / 1024.0 << "MB" << endl;
 
     vector<uint32_t> secondPermu(M), locid(M);
     vector<bool> usedLoc(M);
@@ -361,8 +391,42 @@ void OEPClient(std::vector< std::vector<uint32_t> > weights, std::vector< std::v
 
     cerr << "duplication" << endl;
 
-    vector<bool> dummyTag(M);
-    DuplicationNetwork(values, dummyTag, context, type);
+    // vector<bool> dummyTag(M);
+    // DuplicationNetwork(values, dummyTag, context, type);
+    auto OT_start_time = std::chrono::system_clock::now();
+    IOService ios;
+    Channel senderChl = Session(ios, ("0.0.0.0:" + std::to_string(context.port)), SessionMode::Server).addChannel();
+	std::vector<std::array<block, 2>> sendMessages(weightcnt * M);
+    std::vector<uint32_t> rndWeights(weightcnt);
+    PRNG prng(sysRandomSeed());
+	IknpOtExtSender sender;
+    uint32_t choiceid = 0;
+    for (auto id=0; id<M; ++id) {
+        uint32_t choiceZero, choiceOne;
+        for (auto i=0; i<weightcnt; ++i) {
+            rndWeights[i] = prng.get();
+            if (type == S_ARITH) {
+                choiceZero = values[id][i] - rndWeights[i];
+                if (id == 0) {
+                    choiceOne = values[id][i] - rndWeights[i];
+                } else {
+                    choiceOne = values[id-1][i] - rndWeights[i];
+                }
+            } else if (type == S_BOOL) {
+                choiceZero = values[id][i] ^ rndWeights[i];
+                if (id == 0) {
+                    choiceOne = values[id][i] ^ rndWeights[i];
+                } else {
+                    choiceOne = values[id-1][i] ^ rndWeights[i];
+                }
+            }
+            sendMessages[choiceid++] = {toBlock(choiceZero), toBlock(choiceOne)};
+        }
+        values[id] = rndWeights;
+    }    
+    sender.sendChosen(sendMessages, prng, senderChl);
+    auto OT_end_time = std::chrono::system_clock::now();
+    // cout << "OT " << M * weightcnt << " elements, take " << 1.0 * (OT_end_time - OT_start_time).count() / CLOCKS_PER_SEC << "s, transmit " << senderChl.getTotalDataSent() / 1024.0 / 1024.0 << "MB" << endl;
 
     std::vector< std::vector<uint32_t> > values2(M);
     outputs.resize(M);

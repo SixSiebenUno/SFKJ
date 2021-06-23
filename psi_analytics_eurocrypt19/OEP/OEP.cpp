@@ -147,6 +147,7 @@ void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_
     uint32_t N, M, weightcnt;
     M = indices.size();
     // communicate output size
+    cout << "oep start" << endl;
     auto sock = EstablishConnection(context.address, context.port, static_cast<e_role>(context.role));
     sock->Send(&M, sizeof(uint32_t));
     sock->Receive(&N, sizeof(uint32_t));
@@ -328,7 +329,7 @@ void OEPClient(std::vector< std::vector<uint32_t> > weights, std::vector< std::v
 
     auto OT_start_time = std::chrono::system_clock::now();
     IOService ios;
-    Channel senderChl = Session(ios, (context.address + ":" + std::to_string(context.port)), SessionMode::Server).addChannel();
+    Channel senderChl = Session(ios, ("0.0.0.0:" + std::to_string(context.port)), SessionMode::Server).addChannel();
 	std::vector<std::array<block, 2>> sendMessages(weightcnt);
     std::vector<uint32_t> rndWeights(weightcnt);
     PRNG prng(sysRandomSeed());

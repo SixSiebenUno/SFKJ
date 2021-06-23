@@ -869,14 +869,17 @@ void OpprgPsiPayloadClient(const std::vector<uint64_t> &elements, std::vector<ui
     X.at(i).elem = masks_with_dummies.at(i);
   }
 
+  cerr << "shabi1" << endl;
   std::vector<uint8_t> poly_rcv_buffer(context.nmegabins * context.polynomialbytelength, 0);
   
   const auto receiving_start_time = std::chrono::system_clock::now();
   
+  cerr << "shabi1" << endl;
   sock->Receive(poly_rcv_buffer.data(), context.nmegabins * context.polynomialbytelength);
   context.comm_cost += sock->getSndCnt() + sock->getRcvCnt();
   sock->Close();
   
+  cerr << "shabi1" << endl;
   const auto receiving_end_time = std::chrono::system_clock::now();
   const duration_millis sending_duration = receiving_end_time - receiving_start_time;
   context.timings.polynomials_transmission = sending_duration.count();
@@ -889,11 +892,13 @@ void OpprgPsiPayloadClient(const std::vector<uint64_t> &elements, std::vector<ui
     }
   }
 
+  cerr << "shabi1" << endl;
   for (auto i = 0ull; i < X.size(); ++i) {
     std::size_t p = i / nbinsinmegabin;
     Poly::evalMersenne(Y.at(i), polynomials.at(p), X.at(i));
   }
 
+  cerr << "shabi1" << endl;
   const auto eval_poly_end_time = std::chrono::system_clock::now();
   const duration_millis eval_poly_duration = eval_poly_end_time - eval_poly_start_time;
   context.timings.polynomials = eval_poly_duration.count();
@@ -904,6 +909,7 @@ void OpprgPsiPayloadClient(const std::vector<uint64_t> &elements, std::vector<ui
     raw_bin_result.push_back(X[i].elem ^ Y[i].elem);
   }
 
+  cerr << "shabi1" << endl;
   const auto end_time = std::chrono::system_clock::now();
   const duration_millis total_duration = end_time - start_time;
   context.timings.total = total_duration.count();
@@ -917,6 +923,7 @@ void OpprgPsiPayloadClient(const std::vector<uint64_t> &elements, std::vector<ui
     weights[i].resize(weightlen);
   }
 
+  cerr << "shabi1" << endl;
   for (auto weightid=0; weightid < weightlen; ++weightid) {
     sock = EstablishConnection(context.address, context.port, static_cast<e_role>(context.role));
     sock->Receive(poly_rcv_buffer.data(), context.nmegabins * context.polynomialbytelength);
@@ -940,6 +947,7 @@ void OpprgPsiPayloadClient(const std::vector<uint64_t> &elements, std::vector<ui
       weights[i][weightid] = (X[i].elem ^ Y[i].elem);
     }
   }
+  cerr << "shabi1" << endl;
   return;
 }
 

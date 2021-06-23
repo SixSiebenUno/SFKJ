@@ -847,8 +847,10 @@ void OpprgPsiPayloadClient(const std::vector<uint64_t> &elements, std::vector<ui
   const duration_millis oprf_duration = oprf_end_time - oprf_start_time;
   context.timings.oprf = oprf_duration.count();
 
+  cout << "guess boom here";
   std::unique_ptr<CSocket> sock =
-      EstablishConnection(context.address, context.port, static_cast<e_role>(context.role));
+      EstablishConnection(context.address, context.port + 1, static_cast<e_role>(context.role));
+  cout << "not boom here";
 
   const auto nbinsinmegabin = ceil_divide(context.nbins, context.nmegabins);
   std::vector<std::vector<ZpMersenneLongElement>> polynomials(context.nmegabins);
@@ -989,7 +991,7 @@ std::vector<uint64_t> OpprgPsiServer(const std::vector<uint64_t> &elements,
   }
 
   std::unique_ptr<CSocket> sock =
-      EstablishConnection(context.address, context.port, static_cast<e_role>(context.role));
+      EstablishConnection(context.address, context.port + 1, static_cast<e_role>(context.role));
 
   InterpolatePolynomials(polynomials, content_of_bins, masks, context);
 

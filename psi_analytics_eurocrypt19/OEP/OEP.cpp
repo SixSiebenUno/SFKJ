@@ -153,7 +153,7 @@ void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_
     sock->Receive(&N, sizeof(uint32_t));
     sock->Receive(&weightcnt, sizeof(uint32_t));
     sock->Close();
-    // cout << "oep size" << N << ' ' << M << ' ' << weightcnt << endl;
+    cout << "oep size" << N << ' ' << M << ' ' << weightcnt << endl;
     uint32_t oriM = M;
     if (M < N) {
         M = N;
@@ -193,7 +193,7 @@ void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_
         weights[i].resize(weightcnt);
         values[i].resize(weightcnt);
     }
-    // cout << "first permutation" << endl;
+    cout << "first permutation" << endl;
     obliviousPermutation(weights, firstPermu, values, context, type);
 
     auto OT_start_time = std::chrono::system_clock::now();
@@ -484,7 +484,7 @@ void permutationToBits(vector<int> permuIndices, int size, bool* bits)
 void obliviousPermutation(vector< vector<uint32_t> > weights, vector< uint32_t > indices, 
                 vector< vector<uint32_t> > &value, ENCRYPTO::PsiAnalyticsContext &context, e_sharing type) {
     e_role role = (e_role)context.role;
-	string address = context.address;
+	string address = ((context.role == SERVER) ? "0.0.0.0" : context.address);
     uint16_t port = context.port;
 	uint32_t bitlen = 32, secparam = 128, nthreads = 1, prot_version = 0;
 	e_mt_gen_alg mt_alg = MT_OT;

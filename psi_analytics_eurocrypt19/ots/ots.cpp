@@ -58,9 +58,11 @@ std::vector<std::uint64_t> ot_receiver(const std::vector<std::uint64_t> &inputs,
   // set up networking
   std::string name = "n";
   osuCrypto::IOService ios;
+  cout << "ots here" << endl;
   osuCrypto::Session ep(ios, context.address, context.port + 1, osuCrypto::SessionMode::Client,
                         name);
   auto recvChl = ep.addChannel(name, name);
+  cout << "ots end here" << endl;
 
   const auto baseots_start_time = std::chrono::system_clock::now();
   // the number of base OT that need to be done
@@ -124,9 +126,11 @@ std::vector<std::vector<std::uint64_t>> ot_sender(
 
   std::string name = "n";
   osuCrypto::IOService ios;
+  cout << "ots here" << endl;
   osuCrypto::Session ep(ios, "0.0.0.0", context.port + 1, osuCrypto::SessionMode::Server,
                         name);
   auto sendChl = ep.addChannel(name, name);
+  cout << "ots end here" << endl;
 
   const auto baseots_start_time = std::chrono::system_clock::now();
 

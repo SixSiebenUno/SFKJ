@@ -161,7 +161,7 @@ void DuplicationNetwork(std::vector< std::vector<uint32_t> > &values, std::vecto
     vector<share*> invals(neles), muxtags(neles), outvals(neles);
 
     for (auto i=0; i<neles; ++i) {
-        if (type == S_ARITH) {
+        if (type == -1) {
             invals[i] = ac->PutSharedSIMDINGate(weightcnt, values[i].data(), 32);
             invals[i] = bc->PutA2BGate(invals[i], yc);
         } else {
@@ -174,7 +174,7 @@ void DuplicationNetwork(std::vector< std::vector<uint32_t> > &values, std::vecto
         invals[i] = bc->PutMUXGate(invals[i-1], invals[i], muxtags[i]);
     }
     for (auto i=0; i<neles; ++i) {
-        if (type == S_ARITH) {
+        if (type == -1) {
             invals[i] = ac->PutB2AGate(invals[i]);
             invals[i] = ac->PutSharedOUTGate(invals[i]);
         } else {
@@ -251,10 +251,10 @@ void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_
         weights[i].resize(weightcnt);
         values[i].resize(weightcnt);
     }
-    cout << "first permutation" << endl;
+    cerr << "first permutation" << endl;
     obliviousPermutation(weights, firstPermu, values, context, type);
 
-    cout << "duplication" << endl;
+    cerr << "duplication" << endl;
     DuplicationNetwork(values, dummyTag, context, type);
 
     vector<uint32_t> secondPermu(M), locid(M);
@@ -356,10 +356,10 @@ void OEPClient(std::vector< std::vector<uint32_t> > weights, std::vector< std::v
         }
     }
     std::vector<uint32_t> empty_indices(M);
-    cout << "first permutation" << endl;
+    cerr << "first permutation" << endl;
     obliviousPermutation(extendedWeights, empty_indices, values, context, type);
 
-    cout << "duplication" << endl;
+    cerr << "duplication" << endl;
 
     vector<bool> dummyTag(M);
     DuplicationNetwork(values, dummyTag, context, type);

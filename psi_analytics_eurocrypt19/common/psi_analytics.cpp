@@ -1132,7 +1132,7 @@ void OpprgPsiPayloadServer(const std::vector<uint64_t> &elements, std::vector<ui
           herweights[i][j] = weights[simple_table_id[i][j]][weightid] - rndweights[i];
       }
     }
-    sock = EstablishConnection(context.address, context.port, static_cast<e_role>(context.role));
+    sock = EstablishConnection(context.address, context.port + weightid + 10, static_cast<e_role>(context.role));
     InterpolatePolynomials(polynomials, herweights, masks, context);
     sock->Send((uint8_t *)polynomials.data(), context.nmegabins * context.polynomialbytelength);
     context.comm_cost += sock->getSndCnt() + sock->getRcvCnt();

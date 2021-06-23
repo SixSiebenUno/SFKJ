@@ -470,8 +470,8 @@ int main(int argc, char **argv) {
     config.comm_cost = 0;
     config.total_time = 0;
 
-    OULADDemo(config);
-    // MNISTDemo(config);
+    // OULADDemo(config);
+    MNISTDemo(config);
     // IRISDemo(config);
     // MovielensLinearDemo(config);
 

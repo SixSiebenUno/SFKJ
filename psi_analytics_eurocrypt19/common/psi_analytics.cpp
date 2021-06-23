@@ -611,7 +611,7 @@ void PSIpayload(const std::vector<std::uint64_t> &inputs, std::vector<std::vecto
   }
   context.comm_cost += sock->getSndCnt() + sock->getRcvCnt();
   sock->Close();
-  // cout << myneles << ' ' << herneles << ' ' << weightlen << endl;
+  cout << myneles << ' ' << herneles << ' ' << weightlen << endl;
 
   // cout << "my info " << endl;
   // for (auto i=0; i<inputs.size(); ++i) {
@@ -633,7 +633,7 @@ void PSIpayload(const std::vector<std::uint64_t> &inputs, std::vector<std::vecto
   context.polynomialbytelength = context.polynomialsize * sizeof(std::uint64_t);
   
   // create hash tables from the elements
-  // cout << "OPPRF period" << endl;
+  cout << "OPPRF period" << endl;
   std::vector<uint64_t> bins;
   if (context.role == SERVER) {
     OpprgPsiPayloadClient(inputs, bins, weightlen, weights, orders, context);

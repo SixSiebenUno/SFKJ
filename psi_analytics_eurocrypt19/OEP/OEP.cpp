@@ -182,7 +182,11 @@ void DuplicationNetwork(std::vector< std::vector<uint32_t> > &values, std::vecto
         }
     }
 
+    cout << "start " < endl;
+
     party->ExecCircuit();
+
+    cout << "end execute" << endl;
 
     for (auto i=0; i<neles; ++i) {
         uint32_t *tmpvals, bitlen, nvals;
@@ -192,6 +196,8 @@ void DuplicationNetwork(std::vector< std::vector<uint32_t> > &values, std::vecto
             values[i][j] = tmpvals[j];
         }
     }
+
+    cout << "finish dn" << endl;
 }
 
 void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_t> > &outputs,

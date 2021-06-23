@@ -1265,7 +1265,7 @@ std::unique_ptr<CSocket> EstablishConnection(const std::string &address, uint16_
                                              e_role role) {
   std::unique_ptr<CSocket> socket;
   if (role == SERVER) {
-    socket = Listen(address.c_str(), port);
+    socket = Listen("0.0.0.0", port);
   } else {
     socket = Connect(address.c_str(), port);
   }

@@ -654,10 +654,13 @@ void PSIpayload(const std::vector<std::uint64_t> &inputs, std::vector<std::vecto
   } 
   ABYParty party(static_cast<e_role>(context.role), abyaddress, context.port, LT, 64,
                  context.nthreads);
+  cerr << "mfk ABY" << endl;
   party.ConnectAndBaseOTs();
+  cerr << "mfk ABY 2" << endl;
   auto bc = dynamic_cast<BooleanCircuit *>(
       party.GetSharings().at(S_BOOL)->GetCircuitBuildRoutine());  // GMW circuit
   assert(bc);
+  cerr << "end ABY" << endl;
 
   share_ptr s_in_server, s_in_client;
 
@@ -680,12 +683,15 @@ void PSIpayload(const std::vector<std::uint64_t> &inputs, std::vector<std::vecto
     bin_results.at(i) = share_ptr(bc->PutSharedOUTGate(bin_results.at(i).get()));
   }
 
+  cerr << "execute ABY" << endl;
   party.ExecCircuit();
+  cerr << "finish ABY" << endl;
 
   equaltags.resize(bins.size());
   for (uint32_t i=0; i<bins.size(); ++i) {
     equaltags[i] = bin_results[i]->get_clear_value<bool>();
   }
+  cerr << "get value ABY" << endl;
 
   // check phase
   // cout << "Check result Phase" << endl;

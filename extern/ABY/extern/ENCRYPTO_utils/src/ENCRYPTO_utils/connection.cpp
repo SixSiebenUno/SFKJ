@@ -99,7 +99,7 @@ std::unique_ptr<CSocket> Connect(const std::string& address, uint16_t port) {
 	for (int i = 0; i < RETRY_CONNECT; i++) {
 		if (socket->Connect(address, port))
 			return socket;
-		SleepMiliSec(10);
+		SleepMiliSec(100);
 	}
 	std::cerr << "Connect failed due to timeout!\n";
 	return nullptr;

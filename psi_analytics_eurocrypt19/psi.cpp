@@ -496,10 +496,26 @@ void testsort(ENCRYPTO::PsiAnalyticsContext config) {
   CheckPhase(vals, config);
 }
 
+void ServerClientSync(ENCRYPTO::PsiAnalyticsContext context) {
+  cout << "check server client linkage" << endl;
+  std::unique_ptr<CSocket> sock = ENCRYPTO::EstablishConnection(context.address, context.port, static_cast<e_role>(context.role));
+  uint8_t value = 0;
+  if (context.role == SERVER) {
+    sock -> Send(&value, sizeof(value));
+  } else {
+    sock -> Receive(&value, sizeof(value));
+  }
+  sock->Close();
+  cout << "check server client linkage ended" << endl;
+  return;
+}
+
 int main(int argc, char **argv) {
   auto config = read_test_options(argc, argv);
   config.total_time = 0;
   config.comm_cost = 0;
+
+  ServerClientSync(config);
 
   // testObliviousPermutation(config);
   

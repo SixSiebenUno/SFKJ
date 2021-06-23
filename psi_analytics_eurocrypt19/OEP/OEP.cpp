@@ -81,8 +81,8 @@ void MergeTags(std::vector<bool> tag1, std::vector<bool> tag2, std::vector<bool>
             if (i == j) continue;
             if (i != pid && j != pid) continue;
             PsiAnalyticsContext tconfig = context;
-            tconfig.address = "127.0.0.1";
-            tconfig.port = 8080 + i * pcnt + j;
+            tconfig.address = context.address;
+            tconfig.port = context.port;
             // cout << tconfig.address << ' ' << tconfig.port << endl;
             if (i == pid) {
                 tconfig.role = SERVER;

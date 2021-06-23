@@ -179,10 +179,12 @@ namespace ENCRYPTO {
         uint64_t outputsize = tuples.size();
         uint64_t svrattributes = tuples[0].size();
         uint64_t cliattributes = 0;
+        cout << "establish connection" << endl;
         auto sock = EstablishConnection(context.address, context.port, static_cast<e_role>(rolecontext.role));
         sock->Send(&outputsize, sizeof(uint64_t));
         sock->Send(&svrattributes, sizeof(uint64_t));
         sock->Receive(&cliattributes, sizeof(uint64_t));
+        cout << "establish ended" << endl;
         uint64_t outputattributes = svrattributes + cliattributes;
 
         // cout << "communicate round finished " << outputsize << ' ' << outputattributes << endl;
@@ -273,10 +275,12 @@ namespace ENCRYPTO {
         uint64_t outputsize = 0;
         uint64_t svrattributes = 0;
         uint64_t cliattributes = tuples[0].size();
+        cout << "establish connection" << endl;
         auto sock = EstablishConnection(context.address, context.port, static_cast<e_role>(rolecontext.role));
         sock->Receive(&outputsize, sizeof(uint64_t));
         sock->Receive(&svrattributes, sizeof(uint64_t));
         sock->Send(&cliattributes, sizeof(uint64_t));
+        cout << "establish ended" << endl;
         uint64_t outputattributes = svrattributes + cliattributes;
 
         // cout << "communicate round finished " << outputsize << ' ' << outputattributes << endl;

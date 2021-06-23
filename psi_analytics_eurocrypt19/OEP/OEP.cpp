@@ -161,7 +161,7 @@ void DuplicationNetwork(std::vector< std::vector<uint32_t> > &values, std::vecto
     vector<share*> invals(neles), muxtags(neles), outvals(neles);
 
     for (auto i=0; i<neles; ++i) {
-        if (type == -1) {
+        if (type == S_ARITH) {
             invals[i] = ac->PutSharedSIMDINGate(weightcnt, values[i].data(), 32);
             invals[i] = bc->PutA2BGate(invals[i], yc);
         } else {
@@ -174,7 +174,7 @@ void DuplicationNetwork(std::vector< std::vector<uint32_t> > &values, std::vecto
         invals[i] = bc->PutMUXGate(invals[i-1], invals[i], muxtags[i]);
     }
     for (auto i=0; i<neles; ++i) {
-        if (type == -1) {
+        if (type == S_ARITH) {
             invals[i] = ac->PutB2AGate(invals[i]);
             invals[i] = ac->PutSharedOUTGate(invals[i]);
         } else {

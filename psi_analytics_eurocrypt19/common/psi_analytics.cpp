@@ -643,7 +643,6 @@ void PSIpayload(const std::vector<std::uint64_t> &inputs, std::vector<std::vecto
 
   // update equal tag
 
-  cout << "init ABY" << endl;
   // instantiate ABY
   std::string abyaddress;
   if (context.role == SERVER) {
@@ -655,12 +654,9 @@ void PSIpayload(const std::vector<std::uint64_t> &inputs, std::vector<std::vecto
   cerr << abyaddress << ' ' << context.port << ' ' << context.role << endl;
   ABYParty party(static_cast<e_role>(context.role), abyaddress, context.port, LT, 64,
                  context.nthreads);
-  cerr << "mfk ABY" << endl;
-  cerr << "mfk ABY 2" << endl;
   auto bc = dynamic_cast<BooleanCircuit *>(
       party.GetSharings().at(S_BOOL)->GetCircuitBuildRoutine());  // GMW circuit
   assert(bc);
-  cerr << "end ABY" << endl;
 
   share_ptr s_in_server, s_in_client;
 
@@ -683,15 +679,12 @@ void PSIpayload(const std::vector<std::uint64_t> &inputs, std::vector<std::vecto
     bin_results.at(i) = share_ptr(bc->PutSharedOUTGate(bin_results.at(i).get()));
   }
 
-  cerr << "execute ABY" << endl;
   party.ExecCircuit();
-  cerr << "finish ABY" << endl;
 
   equaltags.resize(bins.size());
   for (uint32_t i=0; i<bins.size(); ++i) {
     equaltags[i] = bin_results[i]->get_clear_value<bool>();
   }
-  cerr << "get value ABY" << endl;
 
   // check phase
   // cout << "Check result Phase" << endl;
@@ -855,14 +848,10 @@ void OpprgPsiPayloadClient(const std::vector<uint64_t> &elements, std::vector<ui
   context.timings.hashing = hashing_duration.count();
   const auto oprf_start_time = std::chrono::system_clock::now();
 
-  cout << "go in ot_receiver" << endl;
   std::vector<uint64_t> masks_with_dummies = ot_receiver(cuckoo_table_v, context);
-  cout << "go out ot_receiver" << endl;
 
-  cerr << "guess boom here" << endl;
   std::unique_ptr<CSocket> sock =
       EstablishConnection(context.address, context.port, static_cast<e_role>(context.role));
-  cerr << "not boom here" << endl;;
 
   const auto nbinsinmegabin = ceil_divide(context.nbins, context.nmegabins);
   std::vector<std::vector<ZpMersenneLongElement>> polynomials(context.nmegabins);
@@ -923,9 +912,8 @@ void OpprgPsiPayloadClient(const std::vector<uint64_t> &elements, std::vector<ui
     weights[i].resize(weightlen);
   }
 
-  cerr << "shabi send weight" << endl;
   for (auto weightid=0; weightid < weightlen; ++weightid) {
-    cerr << "roundd " << weightid << endl;
+    // cerr << "roundd " << weightid << endl;
     sock = EstablishConnection(context.address, context.port + weightid + 10, static_cast<e_role>(context.role));
     sock->Receive(poly_rcv_buffer.data(), context.nmegabins * context.polynomialbytelength);
     context.comm_cost += sock->getSndCnt() + sock->getRcvCnt();
@@ -948,7 +936,6 @@ void OpprgPsiPayloadClient(const std::vector<uint64_t> &elements, std::vector<ui
       weights[i][weightid] = (X[i].elem ^ Y[i].elem);
     }
   }
-  cerr << "shabi sended weight" << endl;
   return;
 }
 
@@ -1060,9 +1047,7 @@ void OpprgPsiPayloadServer(const std::vector<uint64_t> &elements, std::vector<ui
 
   const auto oprf_start_time = std::chrono::system_clock::now();
 
-  cout << "go to ot_sender" << endl;
   auto masks = ot_sender(simple_table_v, context);
-  cout << "go out ot_sender" << endl;
 
   const auto oprf_end_time = std::chrono::system_clock::now();
   const duration_millis oprf_duration = oprf_end_time - oprf_start_time;
@@ -1124,7 +1109,7 @@ void OpprgPsiPayloadServer(const std::vector<uint64_t> &elements, std::vector<ui
 
   for (auto weightid = 0; weightid < weightlen; ++weightid) {
     // Generate secrets of weights[weight_id]
-    cout << "roundd " << weightid << endl;
+    // cout << "roundd " << weightid << endl;
     for (auto i=0; i<context.nbins; ++i) {
       rndweights[i] = (uint32_t) dist(urandom);
       // rndweights[i] = 0;

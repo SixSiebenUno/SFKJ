@@ -58,11 +58,9 @@ std::vector<std::uint64_t> ot_receiver(const std::vector<std::uint64_t> &inputs,
   // set up networking
   std::string name = "n";
   osuCrypto::IOService ios;
-  std::cout << "ots here" << std::endl;
   osuCrypto::Session ep(ios, context.address, context.port + 1, osuCrypto::SessionMode::Client,
                         name);
   auto recvChl = ep.addChannel(name, name);
-  std::cout << "ots end here" << std::endl;
 
   const auto baseots_start_time = std::chrono::system_clock::now();
   // the number of base OT that need to be done
@@ -75,21 +73,17 @@ std::vector<std::uint64_t> ot_receiver(const std::vector<std::uint64_t> &inputs,
   osuCrypto::DefaultBaseOT baseOTs;
 
 
-  std::cout << "shabi1" << std::endl;
-
   baseOTs.send(baseSend, prng, recvChl, 1);
   recv.setBaseOts(baseSend);
   const auto baseots_end_time = std::chrono::system_clock::now();
   const duration_millis baseOTs_duration = baseots_end_time - baseots_start_time;
   context.timings.base_ots_libote = baseOTs_duration.count();
 
-  std::cout << "shabi2" << std::endl;
   const auto OPRF_start_time = std::chrono::system_clock::now();
   recv.init(numOTs, prng, recvChl);
 
   std::vector<osuCrypto::block> blocks(numOTs), receiver_encoding(numOTs);
 
-  std::cout << "shabi3" << std::endl;
   for (auto i = 0ull; i < inputs.size(); ++i) {
     blocks.at(i) = osuCrypto::toBlock(inputs[i]);
   }
@@ -99,14 +93,12 @@ std::vector<std::uint64_t> ot_receiver(const std::vector<std::uint64_t> &inputs,
                 sizeof(osuCrypto::block));
   }
 
-  std::cout << "shabi4" << std::endl;
   recv.sendCorrection(recvChl, numOTs);
 
   for (auto k = 0ull; k < numOTs; ++k) {
     // copy only part of the encoding
     outputs.push_back(reinterpret_cast<uint64_t *>(&receiver_encoding.at(k))[0] &= __61_bit_mask);
   }
-  std::cout << "shabi5" << std::endl;
   const auto OPRF_end_time = std::chrono::system_clock::now();
   const duration_millis OPRF_duration = OPRF_end_time - OPRF_start_time;
   context.timings.oprf = OPRF_duration.count();
@@ -114,10 +106,6 @@ std::vector<std::uint64_t> ot_receiver(const std::vector<std::uint64_t> &inputs,
   recvChl.close();
   ep.stop();
   ios.stop();
-
-  std::cout << "shabi6" << std::endl;
-
-  std::cout << "finish ot receiver" << std::endl;
 
   return outputs;
 }
@@ -138,11 +126,9 @@ std::vector<std::vector<std::uint64_t>> ot_sender(
 
   std::string name = "n";
   osuCrypto::IOService ios;
-  std::cout << "ots here" << std::endl;
   osuCrypto::Session ep(ios, "0.0.0.0", context.port + 1, osuCrypto::SessionMode::Server,
                         name);
   auto sendChl = ep.addChannel(name, name);
-  std::cout << "ots end here" << std::endl;
 
   const auto baseots_start_time = std::chrono::system_clock::now();
 

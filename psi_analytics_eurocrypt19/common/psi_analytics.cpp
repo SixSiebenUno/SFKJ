@@ -926,7 +926,7 @@ void OpprgPsiPayloadClient(const std::vector<uint64_t> &elements, std::vector<ui
   cerr << "shabi send weight" << endl;
   for (auto weightid=0; weightid < weightlen; ++weightid) {
     cerr << "roundd " << weightid << endl;
-    sock = EstablishConnection(context.address, context.port, static_cast<e_role>(context.role));
+    sock = EstablishConnection(context.address, context.port + weightid + 10, static_cast<e_role>(context.role));
     sock->Receive(poly_rcv_buffer.data(), context.nmegabins * context.polynomialbytelength);
     context.comm_cost += sock->getSndCnt() + sock->getRcvCnt();
     sock->Close();

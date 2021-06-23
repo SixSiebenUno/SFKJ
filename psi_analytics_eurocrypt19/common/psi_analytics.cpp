@@ -1124,6 +1124,7 @@ void OpprgPsiPayloadServer(const std::vector<uint64_t> &elements, std::vector<ui
 
   for (auto weightid = 0; weightid < weightlen; ++weightid) {
     // Generate secrets of weights[weight_id]
+    cout << "roundd " << weightid << endl;
     for (auto i=0; i<context.nbins; ++i) {
       rndweights[i] = (uint32_t) dist(urandom);
       // rndweights[i] = 0;

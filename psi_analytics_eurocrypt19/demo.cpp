@@ -671,7 +671,7 @@ void LinearDemo(PsiAnalyticsContext &config) {
 
 void PuriDemo(ENCRYPTO::PsiAnalyticsContext config) {
     ServerClientSync(config);
-    uint32_t neles = 128*784*2*10, D = 1, nreal = 0;
+    uint32_t neles = 1000, D = 16, nreal = 0;
     double epi = 1;
     vector<vector<uint32_t>> vals (neles);
     vector<bool> tags (neles);
@@ -692,7 +692,7 @@ void PuriDemo(ENCRYPTO::PsiAnalyticsContext config) {
     // HalfCopyCircuit(vals, tags, config);
     // CompactionCircuit(vals, tags, config);
     // DuplicationCircuit(nreal, vals, tags, config);
-    // PurificationCircuitMultiWires(vals, tags, config);
+    PurificationCircuitMultiWires(vals, tags, config);
 
     // cout << "total communication cost = " << config.comm_cost / 1024.0 / 1024 << " MB" <<endl;
     // cout << "total time cost = " << config.total_time / CLOCKS_PER_SEC << " s" <<endl;
@@ -700,7 +700,7 @@ void PuriDemo(ENCRYPTO::PsiAnalyticsContext config) {
     // config.total_time = 0;
     // PurificationCircuit(vals, tags, config);
 
-    GenerateDPNoise(1000*7, 1000, 7, 1, 1.0, config);
+    // GenerateDPNoise(1000*7, 1000, 7, 1, 1.0, config);
     // GenerateMultTriplet(neles, config);
     // CheckPhase(vals, config);
     cout << "total communication cost = " << config.comm_cost / 1024.0 / 1024 << " MB" <<endl;
@@ -717,7 +717,7 @@ int main(int argc, char **argv) {
   // testsharedjoin(config);
 
   // MovieLensDemo(config);
-  TPCHDemo(config);
+  // TPCHDemo(config);
   // LinearDemo(config);
 
   config.comm_cost = 0;
@@ -727,7 +727,7 @@ int main(int argc, char **argv) {
   // cout << endl;
   // PlaintextTPCHDemo(config);
 
-  // PuriDemo(config);
+  PuriDemo(config);
 
   // MovielensLinearDemo(config);
 

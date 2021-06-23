@@ -652,10 +652,10 @@ void PSIpayload(const std::vector<std::uint64_t> &inputs, std::vector<std::vecto
   else {
     abyaddress = context.address;
   } 
+  cerr << abyaddress << ' ' << context.port << ' ' << context.role << endl;
   ABYParty party(static_cast<e_role>(context.role), abyaddress, context.port, LT, 64,
                  context.nthreads);
   cerr << "mfk ABY" << endl;
-  party.ConnectAndBaseOTs();
   cerr << "mfk ABY 2" << endl;
   auto bc = dynamic_cast<BooleanCircuit *>(
       party.GetSharings().at(S_BOOL)->GetCircuitBuildRoutine());  // GMW circuit

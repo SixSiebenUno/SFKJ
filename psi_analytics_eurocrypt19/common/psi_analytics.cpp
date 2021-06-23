@@ -748,9 +748,7 @@ std::vector<uint64_t> OpprgPsiClient(const std::vector<uint64_t> &elements, std:
   context.timings.hashing = hashing_duration.count();
   const auto oprf_start_time = std::chrono::system_clock::now();
 
-  cout << "go to ot_receiver" << endl;
   std::vector<uint64_t> masks_with_dummies = ot_receiver(cuckoo_table_v, context);
-  cout << "go out ot_receiver" << endl;
   
   const auto oprf_end_time = std::chrono::system_clock::now();
   const duration_millis oprf_duration = oprf_end_time - oprf_start_time;
@@ -844,8 +842,10 @@ void OpprgPsiPayloadClient(const std::vector<uint64_t> &elements, std::vector<ui
   context.timings.hashing = hashing_duration.count();
   const auto oprf_start_time = std::chrono::system_clock::now();
 
+  cout << "go in ot_receiver" << endl;
   std::vector<uint64_t> masks_with_dummies = ot_receiver(cuckoo_table_v, context);
-  
+  cout << "go out ot_receiver" << endl;
+
   const auto oprf_end_time = std::chrono::system_clock::now();
   const duration_millis oprf_duration = oprf_end_time - oprf_start_time;
   context.timings.oprf = oprf_duration.count();

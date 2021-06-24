@@ -381,24 +381,24 @@ void OULADDemo(PsiAnalyticsContext &config) {
   cout << "start " << endl;
   vector<vector<uint32_t>> fact, dim1, dim2;
   
-  fact.resize(2000);
-  for (auto i=0; i<2000; ++i) {
+  fact.resize(20000);
+  for (auto i=0; i<20000; ++i) {
     fact[i].resize(2);
     for (auto j=0; j<2; ++j) {
       fact[i][j] = rand();
     }
   }
 
-  dim1.resize(495);
-  for (auto i=0; i<495; ++i) {
+  dim1.resize(4951);
+  for (auto i=0; i<4951; ++i) {
     dim1[i].resize(2);
     for (auto j=0; j<2; ++j) {
       dim1[i][j] = rand();
     }
   }
 
-  dim2.resize(2000);
-  for (auto i=0; i<2000; ++i) {
+  dim2.resize(20000);
+  for (auto i=0; i<20000; ++i) {
     dim2[i].resize(2);
     for (auto j=0; j<2; ++j) {
       dim2[i][j] = rand();

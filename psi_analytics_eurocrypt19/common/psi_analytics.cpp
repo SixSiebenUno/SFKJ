@@ -1184,7 +1184,6 @@ void InterpolatePolynomialsPaddedWithDummies(
       coeff(context.polynomialsize);
 
   for (auto i = 0ull, bin_counter = 0ull; i < context.polynomialsize;) {
-    cerr << " --> " << i << endl;
     if (bin_counter < nbins_in_megabin) {
       if ((*masks_for_elems_in_bin).size() > 0) {
         for (auto &mask : *masks_for_elems_in_bin) {
@@ -1267,9 +1266,9 @@ void InterpolatePolynomialsPaddedWithDummies(
       ++i;
     }
   }
-
+  cerr << "interpo" << endl;
   Poly::interpolateMersenne(coeff, X, Y);
-
+  cerr << "end interpo" << endl;
   auto coefficient = coeff.begin();
   for (auto i = 0ull; i < coeff.size(); ++i, ++polynomial_offset, ++coefficient) {
     *polynomial_offset = (*coefficient).elem;

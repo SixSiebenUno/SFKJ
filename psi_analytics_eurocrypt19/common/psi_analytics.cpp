@@ -1078,21 +1078,23 @@ void OpprgPsiPayloadServer(const std::vector<uint64_t> &elements, std::vector<ui
     assert(tmp.size() == content_of_bins.size());
   }
 
+  cout << "inter time" << endl;
   InterpolatePolynomials(polynomials, content_of_bins, masks, context);
-
+  cout << "inter time end " << endl;
+  
   const auto polynomials_end_time = std::chrono::system_clock::now();
   const duration_millis polynomials_duration = polynomials_end_time - polynomials_start_time;
   context.timings.polynomials = polynomials_duration.count();
   const auto sending_start_time = std::chrono::system_clock::now();
 
   // send polynomials to the receiver
-  cout << "comm 1" << endl;
+  cout << "comm server 1" << endl;
   std::unique_ptr<CSocket> sock =
       EstablishConnection(context.address, context.port+7, static_cast<e_role>(context.role));
   sock->Send((uint8_t *)polynomials.data(), context.nmegabins * context.polynomialbytelength);
   context.comm_cost += sock->getSndCnt() + sock->getRcvCnt();
   sock->Close();
-  cout << "comm 2" << endl;
+  cout << "comm server 2" << endl;
 
   const auto sending_end_time = std::chrono::system_clock::now();
   const duration_millis sending_duration = sending_end_time - sending_start_time;
@@ -1106,12 +1108,12 @@ void OpprgPsiPayloadServer(const std::vector<uint64_t> &elements, std::vector<ui
   // send weights
   std::vector<uint32_t> rndweights(context.nbins);
   std::vector<std::vector<uint32_t>> myweights(context.nbins), herweights(context.nbins);
-  cout << "comm 3" << endl;
+  cout << "comm server 3" << endl;
   for (auto i=0; i<myweights.size(); ++i) {
     myweights[i].resize(weightlen);
     herweights[i].resize(simple_table_id[i].size());
   }
-  cout << "comm 4" << endl;
+  cout << "comm server 4" << endl;
 
   for (auto weightid = 0; weightid < weightlen; ++weightid) {
     // Generate secrets of weights[weight_id]

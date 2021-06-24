@@ -853,7 +853,7 @@ void OpprgPsiPayloadClient(const std::vector<uint64_t> &elements, std::vector<ui
   cout << "not die here" << endl;
   
   std::unique_ptr<CSocket> sock =
-      EstablishConnection(context.address, context.port, static_cast<e_role>(context.role));
+      EstablishConnection(context.address, context.port + 7, static_cast<e_role>(context.role));
 
   const auto nbinsinmegabin = ceil_divide(context.nbins, context.nmegabins);
   std::vector<std::vector<ZpMersenneLongElement>> polynomials(context.nmegabins);
@@ -915,7 +915,7 @@ void OpprgPsiPayloadClient(const std::vector<uint64_t> &elements, std::vector<ui
   }
 
   for (auto weightid=0; weightid < weightlen; ++weightid) {
-    // cerr << "roundd " << weightid << endl;
+    cerr << "roundd " << weightid << endl;
     sock = EstablishConnection(context.address, context.port + weightid + 10, static_cast<e_role>(context.role));
     sock->Receive(poly_rcv_buffer.data(), context.nmegabins * context.polynomialbytelength);
     context.comm_cost += sock->getSndCnt() + sock->getRcvCnt();
@@ -969,9 +969,7 @@ std::vector<uint64_t> OpprgPsiServer(const std::vector<uint64_t> &elements,
 
   const auto oprf_start_time = std::chrono::system_clock::now();
 
-  cout << "guess die here" << endl;
   auto masks = ot_sender(simple_table_v, context);
-  cout << "not die here" << endl;
 
   const auto oprf_end_time = std::chrono::system_clock::now();
   const duration_millis oprf_duration = oprf_end_time - oprf_start_time;
@@ -1051,7 +1049,9 @@ void OpprgPsiPayloadServer(const std::vector<uint64_t> &elements, std::vector<ui
 
   const auto oprf_start_time = std::chrono::system_clock::now();
 
+  cout << "guess die here" << endl;
   auto masks = ot_sender(simple_table_v, context);
+  cout << "not die here" << endl;
 
   const auto oprf_end_time = std::chrono::system_clock::now();
   const duration_millis oprf_duration = oprf_end_time - oprf_start_time;
@@ -1077,7 +1077,7 @@ void OpprgPsiPayloadServer(const std::vector<uint64_t> &elements, std::vector<ui
   }
 
   std::unique_ptr<CSocket> sock =
-      EstablishConnection(context.address, context.port, static_cast<e_role>(context.role));
+      EstablishConnection(context.address, context.port+7, static_cast<e_role>(context.role));
 
   InterpolatePolynomials(polynomials, content_of_bins, masks, context);
 
@@ -1111,7 +1111,7 @@ void OpprgPsiPayloadServer(const std::vector<uint64_t> &elements, std::vector<ui
 
   for (auto weightid = 0; weightid < weightlen; ++weightid) {
     // Generate secrets of weights[weight_id]
-    // cout << "roundd " << weightid << endl;
+    cout << "roundd " << weightid << endl;
     for (auto i=0; i<context.nbins; ++i) {
       rndweights[i] = (uint32_t) dist(urandom);
       // rndweights[i] = 0;

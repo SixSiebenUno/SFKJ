@@ -692,7 +692,7 @@ void PuriDemo(ENCRYPTO::PsiAnalyticsContext config) {
     // HalfCopyCircuit(vals, tags, config);
     // CompactionCircuit(vals, tags, config);
     // DuplicationCircuit(nreal, vals, tags, config);
-    PurificationCircuitMultiWires(vals, tags, config);
+    // PurificationCircuitMultiWires(vals, tags, config);
 
     // cout << "total communication cost = " << config.comm_cost / 1024.0 / 1024 << " MB" <<endl;
     // cout << "total time cost = " << config.total_time / CLOCKS_PER_SEC << " s" <<endl;
@@ -700,7 +700,7 @@ void PuriDemo(ENCRYPTO::PsiAnalyticsContext config) {
     // config.total_time = 0;
     // PurificationCircuit(vals, tags, config);
 
-    // GenerateDPNoise(1000*7, 1000, 7, 1, 1.0, config);
+    GenerateDPNoise(1000*7, 1000, 7, 1, 1.0, config);
     // GenerateMultTriplet(neles, config);
     // CheckPhase(vals, config);
     cout << "total communication cost = " << config.comm_cost / 1024.0 / 1024 << " MB" <<endl;

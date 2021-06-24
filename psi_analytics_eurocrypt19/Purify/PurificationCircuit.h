@@ -46,3 +46,5 @@ void DuplicationCircuit(uint32_t shrnreal, vector<vector<uint32_t>> &vals, vecto
 void OutputCircuit(vector<vector<uint32_t>> &vals, ENCRYPTO::PsiAnalyticsContext context);
 
 void test(ENCRYPTO::PsiAnalyticsContext context);
+
+void GenerateMultTriplet(uint32_t IT, uint32_t B, uint32_t w, ENCRYPTO::PsiAnalyticsContext &context);

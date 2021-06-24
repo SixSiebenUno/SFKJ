@@ -59,7 +59,7 @@ void GenerateDPNoise(uint32_t length, uint32_t nele, uint32_t D, uint64_t J, dou
 	BooleanCircuit* bc = (BooleanCircuit*) sharings[S_BOOL]->GetCircuitBuildRoutine();
 	BooleanCircuit* ac = (BooleanCircuit*) sharings[S_ARITH]->GetCircuitBuildRoutine();
 
-    auto start = std::chrono::system_clock::now();
+    auto start = clock();
     // share *valA, *valB, *valC; // C = A / B
     // valA = bc->PutCONSGate((uint64_t)123000000000000000LL, 64);
     // valB = bc->PutCONSGate((uint64_t)456, 64);
@@ -174,13 +174,13 @@ void GenerateDPNoise(uint32_t length, uint32_t nele, uint32_t D, uint64_t J, dou
     }
     fout.close();
 
-    auto end = std::chrono::system_clock::now();
-    context.total_time += 1.0 * (end - start).count();
+    auto end = clock();
+    context.total_time += 1.0 * (end - start) ;
     context.comm_cost += party->GetSentData(P_ONLINE) + party->GetReceivedData(P_ONLINE);
 }
 
 void GenerateMultTriplet(uint32_t N, ENCRYPTO::PsiAnalyticsContext &context) {
-    auto start = std::chrono::system_clock::now();
+    auto start = clock();
     vector<uint32_t> A(N), B(N), C(N);
     for (auto i=0; i<N; ++i) {
         A[i] = rand() % 1024;
@@ -215,8 +215,8 @@ void GenerateMultTriplet(uint32_t N, ENCRYPTO::PsiAnalyticsContext &context) {
     }
 
     party->ExecCircuit();
-    auto end = std::chrono::system_clock::now();
-    context.total_time += (end - start).count();
+    auto end = clock();
+    context.total_time += (end - start) ;
     context.comm_cost += party->GetReceivedData(P_ONLINE) + party->GetSentData(P_ONLINE);
     // for (auto i=0; i<N; ++i) {
     //     cout << shrA[i]->get_clear_value<uint32_t>() << ' ' << shrB[i]->get_clear_value<uint32_t>() << ' ' << shrC[i]->get_clear_value<uint32_t>() << endl;
@@ -304,7 +304,7 @@ void GenerateDPNoise_float(uint32_t length, uint32_t J, float coef, float tauC, 
 
 void TestMultiWires(vector<vector<uint32_t>> &vals, uint32_t D, ENCRYPTO::PsiAnalyticsContext &context) {
 
-    auto start_time = std::chrono::system_clock::now();
+    auto start_time = clock();
 
     uint32_t neles = vals.size();
     uint32_t nattr = vals[0].size();
@@ -353,9 +353,46 @@ void TestMultiWires(vector<vector<uint32_t>> &vals, uint32_t D, ENCRYPTO::PsiAna
     return;
 }
 
+void GenerateMultTriplet(uint32_t IT, uint32_t B, uint32_t w, ENCRYPTO::PsiAnalyticsContext &context) {
+    // In each batch, we need a B*w and w*1 Beaver triplets
+    uint32_t totalsize = B * w * 2 * 64;
+
+    IOService ios;
+    BitVector choices(totalsize);
+    PRNG prng(sysRandomSeed());
+    std::vector<block> messages(totalsize);
+    IknpOtExtReceiver receiver;
+
+    std::vector<std::array<block, 2>> sendMessages(totalsize);
+	IknpOtExtSender sender;  
+
+    for (auto itid = 0; itid < IT; ++itid) {
+        cerr << itid << endl;
+        if (context.role == SERVER) {
+            Channel senderChl = Session(ios, ("0.0.0.0:" + std::to_string(context.port + 11 + itid % 200)), SessionMode::Server).addChannel();
+        
+            for (auto i=0; i<totalsize; ++i) {
+                sendMessages[i] = {toBlock(rand()), toBlock(rand())};
+            }
+            sender.sendChosen(sendMessages, prng, senderChl);
+
+            senderChl.close();
+        } else {
+            Channel recverChl = Session(ios, (context.address + ":" + std::to_string(context.port + 11 + itid % 200)), SessionMode::Client).addChannel();
+        
+            for (auto j=0; j<totalsize; ++j) {
+                choices[j] = rand() % 2;
+            }
+            receiver.receiveChosen(choices, messages, prng, recverChl);
+
+            recverChl.close();
+        }
+    }
+}
+
 void PurificationCircuit(vector<vector<uint32_t>> &vals, vector<bool> tags, ENCRYPTO::PsiAnalyticsContext &context) {
 
-    auto start_time = std::chrono::system_clock::now();
+    auto start_time = clock();
 
     uint32_t neles = vals.size();
     uint32_t nattr = vals[0].size();
@@ -517,9 +554,9 @@ void PurificationCircuit(vector<vector<uint32_t>> &vals, vector<bool> tags, ENCR
     uint64_t realsize = actualsize->get_clear_value<uint64_t>();
 
 
-    auto end_time = std::chrono::system_clock::now();
+    auto end_time = clock();
 
-    context.total_time += (end_time - start_time).count();
+    context.total_time += (end_time - start_time) ;
     context.comm_cost += party->GetReceivedData(P_ONLINE) + party->GetSentData(P_ONLINE);
 
     // GenerateDPNoise(3000, realsize, 128.0, context);
@@ -528,7 +565,7 @@ void PurificationCircuit(vector<vector<uint32_t>> &vals, vector<bool> tags, ENCR
 
 void PurificationCircuitMultiWires(vector<vector<uint32_t>> &vals, vector<bool> tags, ENCRYPTO::PsiAnalyticsContext &context) {
 
-    auto start_time = std::chrono::system_clock::now();
+    auto start_time = clock();
 
     uint32_t neles = vals.size();
     uint32_t nattr = vals[0].size();
@@ -690,9 +727,9 @@ void PurificationCircuitMultiWires(vector<vector<uint32_t>> &vals, vector<bool> 
     uint64_t realsize = actualsize->get_clear_value<uint64_t>();
 
 
-    auto end_time = std::chrono::system_clock::now();
+    auto end_time = clock();
 
-    context.total_time += (end_time - start_time).count();
+    context.total_time += (end_time - start_time) ;
     context.comm_cost += party->GetReceivedData(P_ONLINE) + party->GetSentData(P_ONLINE);
 
     // GenerateDPNoise(3000, realsize, 128.0, context);

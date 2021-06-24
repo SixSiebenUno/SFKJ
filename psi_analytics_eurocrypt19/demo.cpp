@@ -698,11 +698,11 @@ void PuriDemo(ENCRYPTO::PsiAnalyticsContext config) {
     // cout << "total time cost = " << config.total_time / CLOCKS_PER_SEC << " s" <<endl;
     // config.comm_cost = 0;
     // config.total_time = 0;
-    PurificationCircuit(vals, tags, config);
+    // PurificationCircuit(vals, tags, config);
 
     // GenerateDPNoise(500*7, 500, 7, 1, 1.0, config);
     // GenerateMultTriplet(neles, config);
-    // GenerateMultTriplet(30, 128, 7*100, config);
+    GenerateMultTriplet(10, 128, 784, config);
     // CheckPhase(vals, config);
     cout << "total communication cost = " << config.comm_cost / 1024.0 / 1024 << " MB" <<endl;
     cout << "total time cost = " << config.total_time / CLOCKS_PER_SEC << " s" <<endl;

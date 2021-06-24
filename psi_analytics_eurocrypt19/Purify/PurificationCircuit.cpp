@@ -364,30 +364,48 @@ void GenerateMultTriplet(uint32_t IT, uint32_t B, uint32_t w, ENCRYPTO::PsiAnaly
     IknpOtExtReceiver receiver;
 
     std::vector<std::array<block, 2>> sendMessages(totalsize);
-	IknpOtExtSender sender;  
+	IknpOtExtSender sender;
+
+    auto st_time = clock();
+
+    vector<uint64_t> randnum (B * w * 2);
+    for (auto i=0; i<randnum.size(); ++i) {
+        randnum[i] = (((uint64_t) rand()) << 32) + rand();
+    }
+
+    context.comm_cost = 0;
 
     for (auto itid = 0; itid < IT; ++itid) {
-        cerr << itid << endl;
+        cout << itid << endl;
         if (context.role == SERVER) {
             Channel senderChl = Session(ios, ("0.0.0.0:" + std::to_string(context.port + 11 + itid % 200)), SessionMode::Server).addChannel();
-        
-            for (auto i=0; i<totalsize; ++i) {
-                sendMessages[i] = {toBlock(rand()), toBlock(rand())};
+            uint32_t id = 0;
+            for (auto i=0; i<randnum.size(); ++i) {
+                for (auto j=0; j<64; ++j) {
+                    sendMessages[id++] = {toBlock((uint64_t) 0), toBlock(randnum[i] << j)};
+                }
             }
             sender.sendChosen(sendMessages, prng, senderChl);
+            context.comm_cost += sendMessages.size() * sizeof(sendMessages[0]);
 
             senderChl.close();
         } else {
             Channel recverChl = Session(ios, (context.address + ":" + std::to_string(context.port + 11 + itid % 200)), SessionMode::Client).addChannel();
-        
-            for (auto j=0; j<totalsize; ++j) {
-                choices[j] = rand() % 2;
+            uint32_t id = 0;
+            for (auto i=0; i< randnum.size(); ++i) {
+                for (auto j=0; j<64; ++j) {
+                    choices[id++] = (randnum[i] >> j) & 1;
+                }
             }
             receiver.receiveChosen(choices, messages, prng, recverChl);
+            context.comm_cost += messages.size() * sizeof(messages[0]);
 
             recverChl.close();
         }
     }
+
+    auto ed_time = clock();
+    context.total_time = 1.0 * (ed_time - st_time);
 }
 
 void PurificationCircuit(vector<vector<uint32_t>> &vals, vector<bool> tags, ENCRYPTO::PsiAnalyticsContext &context) {

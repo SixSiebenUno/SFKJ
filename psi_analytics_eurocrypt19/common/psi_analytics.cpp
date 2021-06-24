@@ -1081,7 +1081,7 @@ void OpprgPsiPayloadServer(const std::vector<uint64_t> &elements, std::vector<ui
   cout << "inter time" << endl;
   InterpolatePolynomials(polynomials, content_of_bins, masks, context);
   cout << "inter time end " << endl;
-  
+
   const auto polynomials_end_time = std::chrono::system_clock::now();
   const duration_millis polynomials_duration = polynomials_end_time - polynomials_start_time;
   context.timings.polynomials = polynomials_duration.count();
@@ -1153,6 +1153,7 @@ void InterpolatePolynomials(std::vector<uint64_t> &polynomials,
   std::size_t nbinsinmegabin = ceil_divide(nbins, context.nmegabins);
 
   for (auto mega_bin_i = 0ull; mega_bin_i < context.nmegabins; ++mega_bin_i) {
+    cerr << mega_bin_i << ' ' << context.nmegabins << endl;
     auto polynomial = polynomials.begin() + context.polynomialsize * mega_bin_i;
     auto bin = content_of_bins.begin() + nbinsinmegabin * mega_bin_i;
     auto masks_in_bin = masks.begin() + nbinsinmegabin * mega_bin_i;
@@ -1183,6 +1184,7 @@ void InterpolatePolynomialsPaddedWithDummies(
       coeff(context.polynomialsize);
 
   for (auto i = 0ull, bin_counter = 0ull; i < context.polynomialsize;) {
+    cerr << " --> " << i << endl;
     if (bin_counter < nbins_in_megabin) {
       if ((*masks_for_elems_in_bin).size() > 0) {
         for (auto &mask : *masks_for_elems_in_bin) {

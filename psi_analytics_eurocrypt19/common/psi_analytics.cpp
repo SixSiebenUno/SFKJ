@@ -848,8 +848,10 @@ void OpprgPsiPayloadClient(const std::vector<uint64_t> &elements, std::vector<ui
   context.timings.hashing = hashing_duration.count();
   const auto oprf_start_time = std::chrono::system_clock::now();
 
+  cout << "guess die here" << endl;
   std::vector<uint64_t> masks_with_dummies = ot_receiver(cuckoo_table_v, context);
-
+  cout << "not die here" << endl;
+  
   std::unique_ptr<CSocket> sock =
       EstablishConnection(context.address, context.port, static_cast<e_role>(context.role));
 
@@ -967,7 +969,9 @@ std::vector<uint64_t> OpprgPsiServer(const std::vector<uint64_t> &elements,
 
   const auto oprf_start_time = std::chrono::system_clock::now();
 
+  cout << "guess die here" << endl;
   auto masks = ot_sender(simple_table_v, context);
+  cout << "not die here" << endl;
 
   const auto oprf_end_time = std::chrono::system_clock::now();
   const duration_millis oprf_duration = oprf_end_time - oprf_start_time;

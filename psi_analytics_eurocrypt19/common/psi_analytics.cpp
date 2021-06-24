@@ -848,12 +848,8 @@ void OpprgPsiPayloadClient(const std::vector<uint64_t> &elements, std::vector<ui
   context.timings.hashing = hashing_duration.count();
   const auto oprf_start_time = std::chrono::system_clock::now();
 
-  cout << "guess die here" << endl;
   std::vector<uint64_t> masks_with_dummies = ot_receiver(cuckoo_table_v, context);
-  cout << "not die here" << endl;
   
-  std::unique_ptr<CSocket> sock =
-      EstablishConnection(context.address, context.port + 7, static_cast<e_role>(context.role));
 
   const auto nbinsinmegabin = ceil_divide(context.nbins, context.nmegabins);
   std::vector<std::vector<ZpMersenneLongElement>> polynomials(context.nmegabins);
@@ -870,9 +866,15 @@ void OpprgPsiPayloadClient(const std::vector<uint64_t> &elements, std::vector<ui
   
   const auto receiving_start_time = std::chrono::system_clock::now();
   
+  cout << "comm 1" << endl;
+
+  std::unique_ptr<CSocket> sock =
+      EstablishConnection(context.address, context.port + 7, static_cast<e_role>(context.role));
   sock->Receive(poly_rcv_buffer.data(), context.nmegabins * context.polynomialbytelength);
   context.comm_cost += sock->getSndCnt() + sock->getRcvCnt();
   sock->Close();
+
+  cout << "comm 2" << endl;
   
   const auto receiving_end_time = std::chrono::system_clock::now();
   const duration_millis sending_duration = receiving_end_time - receiving_start_time;
@@ -885,6 +887,8 @@ void OpprgPsiPayloadClient(const std::vector<uint64_t> &elements, std::vector<ui
           poly_rcv_buffer.data()))[poly_i * context.polynomialsize + coeff_i];
     }
   }
+
+  cout << "comm 3" << endl;
 
   for (auto i = 0ull; i < X.size(); ++i) {
     std::size_t p = i / nbinsinmegabin;
@@ -900,7 +904,7 @@ void OpprgPsiPayloadClient(const std::vector<uint64_t> &elements, std::vector<ui
   for (auto i = 0ull; i < X.size(); ++i) {
     raw_bin_result.push_back(X[i].elem ^ Y[i].elem);
   }
-
+  cout << "comm 4" << endl;
   const auto end_time = std::chrono::system_clock::now();
   const duration_millis total_duration = end_time - start_time;
   context.timings.total = total_duration.count();
@@ -1049,9 +1053,7 @@ void OpprgPsiPayloadServer(const std::vector<uint64_t> &elements, std::vector<ui
 
   const auto oprf_start_time = std::chrono::system_clock::now();
 
-  cout << "guess die here" << endl;
   auto masks = ot_sender(simple_table_v, context);
-  cout << "not die here" << endl;
 
   const auto oprf_end_time = std::chrono::system_clock::now();
   const duration_millis oprf_duration = oprf_end_time - oprf_start_time;
@@ -1076,9 +1078,6 @@ void OpprgPsiPayloadServer(const std::vector<uint64_t> &elements, std::vector<ui
     assert(tmp.size() == content_of_bins.size());
   }
 
-  std::unique_ptr<CSocket> sock =
-      EstablishConnection(context.address, context.port+7, static_cast<e_role>(context.role));
-
   InterpolatePolynomials(polynomials, content_of_bins, masks, context);
 
   const auto polynomials_end_time = std::chrono::system_clock::now();
@@ -1087,9 +1086,13 @@ void OpprgPsiPayloadServer(const std::vector<uint64_t> &elements, std::vector<ui
   const auto sending_start_time = std::chrono::system_clock::now();
 
   // send polynomials to the receiver
+  cout << "comm 1" << endl;
+  std::unique_ptr<CSocket> sock =
+      EstablishConnection(context.address, context.port+7, static_cast<e_role>(context.role));
   sock->Send((uint8_t *)polynomials.data(), context.nmegabins * context.polynomialbytelength);
   context.comm_cost += sock->getSndCnt() + sock->getRcvCnt();
   sock->Close();
+  cout << "comm 2" << endl;
 
   const auto sending_end_time = std::chrono::system_clock::now();
   const duration_millis sending_duration = sending_end_time - sending_start_time;
@@ -1103,11 +1106,12 @@ void OpprgPsiPayloadServer(const std::vector<uint64_t> &elements, std::vector<ui
   // send weights
   std::vector<uint32_t> rndweights(context.nbins);
   std::vector<std::vector<uint32_t>> myweights(context.nbins), herweights(context.nbins);
-
+  cout << "comm 3" << endl;
   for (auto i=0; i<myweights.size(); ++i) {
     myweights[i].resize(weightlen);
     herweights[i].resize(simple_table_id[i].size());
   }
+  cout << "comm 4" << endl;
 
   for (auto weightid = 0; weightid < weightlen; ++weightid) {
     // Generate secrets of weights[weight_id]

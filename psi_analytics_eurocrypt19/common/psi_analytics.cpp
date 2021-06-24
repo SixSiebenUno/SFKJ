@@ -1202,7 +1202,9 @@ void InterpolatePolynomialsPaddedWithDummies(
     }
   }
 
+  cerr << "interpo" << endl;
   Poly::interpolateMersenne(coeff, X, Y);
+  cerr << "end interpo" << endl;
 
   auto coefficient = coeff.begin();
   for (auto i = 0ull; i < coeff.size(); ++i, ++polynomial_offset, ++coefficient) {

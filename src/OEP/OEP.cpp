@@ -205,13 +205,13 @@ void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_
     uint32_t N, M, weightcnt;
     M = indices.size();
     // communicate output size
-    cout << "oep start" << endl;
+    // cout << "oep start" << endl;
     auto sock = EstablishConnection(context.address, context.port, static_cast<e_role>(context.role));
     sock->Send(&M, sizeof(uint32_t));
     sock->Receive(&N, sizeof(uint32_t));
     sock->Receive(&weightcnt, sizeof(uint32_t));
     sock->Close();
-    cout << "oep size" << N << ' ' << M << ' ' << weightcnt << endl;
+    // cout << "oep size" << N << ' ' << M << ' ' << weightcnt << endl;
     uint32_t oriM = M;
     if (M < N) {
         M = N;
@@ -251,10 +251,10 @@ void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_
         weights[i].resize(weightcnt);
         values[i].resize(weightcnt);
     }
-    cerr << "first permutation" << endl;
+    // cerr << "first permutation" << endl;
     obliviousPermutation(weights, firstPermu, values, context, type);
 
-    cerr << "duplication" << endl;
+    // cerr << "duplication" << endl;
     // DuplicationNetwork(values, dummyTag, context, type);
     auto OT_start_time = std::chrono::system_clock::now();
     IOService ios;
@@ -315,7 +315,7 @@ void OEPServer(std::vector< uint32_t > indices, std::vector< std::vector<uint32_
         values2[i].resize(weightcnt);
     }
 
-    cerr << "second permutation" << endl;
+    // cerr << "second permutation" << endl;
     obliviousPermutation(weights, secondPermu, values2, context, type);
 
     if (type == S_ARITH) {
@@ -371,7 +371,7 @@ void OEPClient(std::vector< std::vector<uint32_t> > weights, std::vector< std::v
     sock->Send(&N, sizeof(uint32_t));
     sock->Send(&weightcnt, sizeof(uint32_t));
     sock->Close();
-    cout << "oep size" << N << ' ' << M << ' ' << weightcnt << endl;
+    // cout << "oep size" << N << ' ' << M << ' ' << weightcnt << endl;
     uint32_t oriM = M;
     if (M < N) {
         M = N;
@@ -386,10 +386,10 @@ void OEPClient(std::vector< std::vector<uint32_t> > weights, std::vector< std::v
         }
     }
     std::vector<uint32_t> empty_indices(M);
-    cerr << "first permutation" << endl;
+    // cerr << "first permutation" << endl;
     obliviousPermutation(extendedWeights, empty_indices, values, context, type);
 
-    cerr << "duplication" << endl;
+    // cerr << "duplication" << endl;
 
     // vector<bool> dummyTag(M);
     // DuplicationNetwork(values, dummyTag, context, type);
@@ -435,7 +435,7 @@ void OEPClient(std::vector< std::vector<uint32_t> > weights, std::vector< std::v
         outputs[i].resize(weightcnt);
     }
 
-    cerr << "second permutation" << endl;
+    // cerr << "second permutation" << endl;
     obliviousPermutation(values, empty_indices, values2, context, type);
 
     for (auto i=0; i<M; ++i) {

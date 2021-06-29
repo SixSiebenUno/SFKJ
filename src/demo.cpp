@@ -116,10 +116,6 @@ std::vector<std::vector<uint32_t>> loadtpchdata(string filename, vector<uint32_t
 
     ifstream fin(path.c_str(), ios::in);
     string str;
-    // ignore first three lines
-    // getline(fin, str);
-    // getline(fin, str);
-    // getline(fin, str);
     while (getline(fin, str)) {
         std::vector<uint32_t> values;
         uint32_t val = 0;
@@ -188,7 +184,7 @@ void TPCHDemo(PsiAnalyticsContext &config) {
   } else {
     JoinClient({0}, customer, orders, OC, eq1, config);
   }
-  CheckPhase(OC, eq1, config);
+  // CheckPhase(OC, eq1, config);
   cout << "orders join customer finished" << endl;;
   cout << "communication cost until now = " << config.comm_cost / 1024.0 / 1024 << " MB" <<endl;
   cout << "time cost until now = " << config.total_time / CLOCKS_PER_SEC << " s" <<endl;

@@ -179,12 +179,12 @@ namespace ENCRYPTO {
         uint64_t outputsize = tuples.size();
         uint64_t svrattributes = tuples[0].size();
         uint64_t cliattributes = 0;
-        cout << "establish connection" << endl;
+        // cout << "establish connection" << endl;
         auto sock = EstablishConnection(context.address, context.port, static_cast<e_role>(rolecontext.role));
         sock->Send(&outputsize, sizeof(uint64_t));
         sock->Send(&svrattributes, sizeof(uint64_t));
         sock->Receive(&cliattributes, sizeof(uint64_t));
-        cout << "establish ended" << endl;
+        // cout << "establish ended" << endl;
         uint64_t outputattributes = svrattributes + cliattributes;
 
         // cout << "communicate round finished " << outputsize << ' ' << outputattributes << endl;
@@ -193,12 +193,12 @@ namespace ENCRYPTO {
         std::vector<bool> tempequaltags;
         std::vector<int32_t> orders;
 
-        cout << "PSI phase" << endl;
+        // cout << "PSI phase" << endl;
     // PSI
         PSIpayload(sortedjoinkey, tempweights, rolecontext, orders, tempequaltags);
 
     // OEP with correct lines
-    cout << "oep phase" << endl;
+    // cout << "oep phase" << endl;
         uint32_t invordersize = *max_element(orders.begin(), orders.end());
         // cout << orders.size() << ' ' << invordersize << ' ' << *min_element(orders.begin(), orders.end()) << endl;
         vector<uint32_t> invorders(invordersize + 10);
@@ -238,7 +238,7 @@ namespace ENCRYPTO {
         // }
 
     // connect two tables
-    cout << "connect two tables" << endl;
+    // cout << "connect two tables" << endl;
         outputs.resize(outputsize);
         equaltags.resize(outputsize);
         for (auto i=0; i<outputsize; ++i) {
@@ -257,7 +257,7 @@ namespace ENCRYPTO {
 
         context.total_time += (end_time - start_time) ;
         context.comm_cost += rolecontext.comm_cost;
-        cout << "finished join" << endl;
+        // cout << "finished join" << endl;
     }
 
     void JoinClient(vector<uint32_t> joinkeyid, vector<vector<uint32_t>> tuples,
@@ -276,12 +276,12 @@ namespace ENCRYPTO {
         uint64_t outputsize = 0;
         uint64_t svrattributes = 0;
         uint64_t cliattributes = tuples[0].size();
-        cout << "establish connection" << endl;
+        // cout << "establish connection" << endl;
         auto sock = EstablishConnection(context.address, context.port, static_cast<e_role>(rolecontext.role));
         sock->Receive(&outputsize, sizeof(uint64_t));
         sock->Receive(&svrattributes, sizeof(uint64_t));
         sock->Send(&cliattributes, sizeof(uint64_t));
-        cout << "establish ended" << endl;
+        // cout << "establish ended" << endl;
         uint64_t outputattributes = svrattributes + cliattributes;
 
         // cout << "communicate round finished " << outputsize << ' ' << outputattributes << endl;
@@ -295,7 +295,7 @@ namespace ENCRYPTO {
             tempweights[i] = tuples[i];
         }
     // PSI
-    cout << "psi phase" << endl;
+    // cout << "psi phase" << endl;
         std::vector<int32_t> orders;
         PSIpayload(joinkey, tempweights, rolecontext, orders, tempequaltags);
 
@@ -306,7 +306,7 @@ namespace ENCRYPTO {
         }
 
     // OEP
-    cout << "oep phase" << endl;
+    // cout << "oep phase" << endl;
         vector<vector<uint32_t>> oepresults, oeptagresults;
         OEPClient(tempweights, oepresults, rolecontext, S_ARITH);
         OEPClient(oepeqtags, oeptagresults, rolecontext, S_BOOL);
@@ -320,7 +320,7 @@ namespace ENCRYPTO {
         // }
 
     // connect two tables
-    cout << "connect two tables" << endl;
+    // cout << "connect two tables" << endl;
         outputs.resize(outputsize);
         equaltags.resize(outputsize);
         for (auto i=0; i<outputsize; ++i) {
@@ -339,7 +339,7 @@ namespace ENCRYPTO {
         context.total_time += (end_time - start_time) ;
         context.comm_cost += rolecontext.comm_cost;
 
-        cout << "finished join" << endl;
+        // cout << "finished join" << endl;
     }
 
 

@@ -611,7 +611,7 @@ void PSIpayload(const std::vector<std::uint64_t> &inputs, std::vector<std::vecto
   }
   context.comm_cost += sock->getSndCnt() + sock->getRcvCnt();
   sock->Close();
-  cout << myneles << ' ' << herneles << ' ' << weightlen << endl;
+  // cout << myneles << ' ' << herneles << ' ' << weightlen << endl;
 
   // cout << "my info " << endl;
   // for (auto i=0; i<inputs.size(); ++i) {
@@ -633,7 +633,7 @@ void PSIpayload(const std::vector<std::uint64_t> &inputs, std::vector<std::vecto
   context.polynomialbytelength = context.polynomialsize * sizeof(std::uint64_t);
   
   // create hash tables from the elements
-  cout << "OPPRF period" << endl;
+  // cout << "OPPRF period" << endl;
   std::vector<uint64_t> bins;
   if (context.role == SERVER) {
     OpprgPsiPayloadClient(inputs, bins, weightlen, weights, orders, context);
@@ -866,7 +866,7 @@ void OpprgPsiPayloadClient(const std::vector<uint64_t> &elements, std::vector<ui
   
   const auto receiving_start_time = std::chrono::system_clock::now();
   
-  cout << "comm 1" << endl;
+  // cout << "comm 1" << endl;
 
   std::unique_ptr<CSocket> sock =
       EstablishConnection(context.address, context.port + 7, static_cast<e_role>(context.role));
@@ -874,7 +874,7 @@ void OpprgPsiPayloadClient(const std::vector<uint64_t> &elements, std::vector<ui
   context.comm_cost += sock->getSndCnt() + sock->getRcvCnt();
   sock->Close();
 
-  cout << "comm 2" << endl;
+  // cout << "comm 2" << endl;
   
   const auto receiving_end_time = std::chrono::system_clock::now();
   const duration_millis sending_duration = receiving_end_time - receiving_start_time;
@@ -888,7 +888,7 @@ void OpprgPsiPayloadClient(const std::vector<uint64_t> &elements, std::vector<ui
     }
   }
 
-  cout << "comm 3" << endl;
+  // cout << "comm 3" << endl;
 
   for (auto i = 0ull; i < X.size(); ++i) {
     std::size_t p = i / nbinsinmegabin;
@@ -904,7 +904,7 @@ void OpprgPsiPayloadClient(const std::vector<uint64_t> &elements, std::vector<ui
   for (auto i = 0ull; i < X.size(); ++i) {
     raw_bin_result.push_back(X[i].elem ^ Y[i].elem);
   }
-  cout << "comm 4" << endl;
+  // cout << "comm 4" << endl;
   const auto end_time = std::chrono::system_clock::now();
   const duration_millis total_duration = end_time - start_time;
   context.timings.total = total_duration.count();
@@ -919,7 +919,7 @@ void OpprgPsiPayloadClient(const std::vector<uint64_t> &elements, std::vector<ui
   }
 
   for (auto weightid=0; weightid < weightlen; ++weightid) {
-    cerr << "roundd " << weightid << endl;
+    // cerr << "roundd " << weightid << endl;
     sock = EstablishConnection(context.address, context.port + weightid + 10, static_cast<e_role>(context.role));
     sock->Receive(poly_rcv_buffer.data(), context.nmegabins * context.polynomialbytelength);
     context.comm_cost += sock->getSndCnt() + sock->getRcvCnt();
@@ -1078,9 +1078,9 @@ void OpprgPsiPayloadServer(const std::vector<uint64_t> &elements, std::vector<ui
     assert(tmp.size() == content_of_bins.size());
   }
 
-  cout << "inter time" << endl;
+  // cout << "inter time" << endl;
   InterpolatePolynomials(polynomials, content_of_bins, masks, context);
-  cout << "inter time end " << endl;
+  // cout << "inter time end " << endl;
 
   const auto polynomials_end_time = std::chrono::system_clock::now();
   const duration_millis polynomials_duration = polynomials_end_time - polynomials_start_time;
@@ -1088,13 +1088,13 @@ void OpprgPsiPayloadServer(const std::vector<uint64_t> &elements, std::vector<ui
   const auto sending_start_time = std::chrono::system_clock::now();
 
   // send polynomials to the receiver
-  cout << "comm server 1" << endl;
+  // cout << "comm server 1" << endl;
   std::unique_ptr<CSocket> sock =
       EstablishConnection(context.address, context.port+7, static_cast<e_role>(context.role));
   sock->Send((uint8_t *)polynomials.data(), context.nmegabins * context.polynomialbytelength);
   context.comm_cost += sock->getSndCnt() + sock->getRcvCnt();
   sock->Close();
-  cout << "comm server 2" << endl;
+  // cout << "comm server 2" << endl;
 
   const auto sending_end_time = std::chrono::system_clock::now();
   const duration_millis sending_duration = sending_end_time - sending_start_time;
@@ -1108,16 +1108,16 @@ void OpprgPsiPayloadServer(const std::vector<uint64_t> &elements, std::vector<ui
   // send weights
   std::vector<uint32_t> rndweights(context.nbins);
   std::vector<std::vector<uint32_t>> myweights(context.nbins), herweights(context.nbins);
-  cout << "comm server 3" << endl;
+  // cout << "comm server 3" << endl;
   for (auto i=0; i<myweights.size(); ++i) {
     myweights[i].resize(weightlen);
     herweights[i].resize(simple_table_id[i].size());
   }
-  cout << "comm server 4" << endl;
+  // cout << "comm server 4" << endl;
 
   for (auto weightid = 0; weightid < weightlen; ++weightid) {
     // Generate secrets of weights[weight_id]
-    cout << "roundd " << weightid << endl;
+    // cout << "roundd " << weightid << endl;
     for (auto i=0; i<context.nbins; ++i) {
       rndweights[i] = (uint32_t) dist(urandom);
       // rndweights[i] = 0;
@@ -1153,7 +1153,7 @@ void InterpolatePolynomials(std::vector<uint64_t> &polynomials,
   std::size_t nbinsinmegabin = ceil_divide(nbins, context.nmegabins);
 
   for (auto mega_bin_i = 0ull; mega_bin_i < context.nmegabins; ++mega_bin_i) {
-    cerr << mega_bin_i << ' ' << context.nmegabins << endl;
+    // cerr << mega_bin_i << ' ' << context.nmegabins << endl;
     auto polynomial = polynomials.begin() + context.polynomialsize * mega_bin_i;
     auto bin = content_of_bins.begin() + nbinsinmegabin * mega_bin_i;
     auto masks_in_bin = masks.begin() + nbinsinmegabin * mega_bin_i;
@@ -1202,9 +1202,9 @@ void InterpolatePolynomialsPaddedWithDummies(
     }
   }
 
-  cerr << "interpo" << endl;
+  // cerr << "interpo" << endl;
   Poly::interpolateMersenne(coeff, X, Y);
-  cerr << "end interpo" << endl;
+  // cerr << "end interpo" << endl;
 
   auto coefficient = coeff.begin();
   for (auto i = 0ull; i < coeff.size(); ++i, ++polynomial_offset, ++coefficient) {
@@ -1268,9 +1268,9 @@ void InterpolatePolynomialsPaddedWithDummies(
       ++i;
     }
   }
-  cerr << "interpo" << endl;
+  // cerr << "interpo" << endl;
   Poly::interpolateMersenne(coeff, X, Y);
-  cerr << "end interpo" << endl;
+  // cerr << "end interpo" << endl;
   auto coefficient = coeff.begin();
   for (auto i = 0ull; i < coeff.size(); ++i, ++polynomial_offset, ++coefficient) {
     *polynomial_offset = (*coefficient).elem;

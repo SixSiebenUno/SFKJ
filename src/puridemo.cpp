@@ -145,8 +145,8 @@ void PuriDemo(ENCRYPTO::PsiAnalyticsContext config) {
     
     CheckPhase(vals, tags, config);
 
-    // PurificationCircuit(vals, tags, config);
-    PurificationCircuitMultiWires(vals, tags, config);
+    PurificationCircuit(vals, tags, config);
+    // PurificationCircuitMultiWires(vals, tags, config);
 
     CheckPhase(vals, config);
 

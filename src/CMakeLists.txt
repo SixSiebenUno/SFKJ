@@ -67,13 +67,13 @@ target_link_libraries(SFKJ INTERFACE
         )
 
 target_include_directories(SFKJ PUBLIC
-        ${PSI_ANALYTICS_SOURCE_ROOT}/src
-        ${PSI_ANALYTICS_SOURCE_ROOT}/extern
-        ${PSI_ANALYTICS_SOURCE_ROOT}/extern/libOTe/cryptoTools
-        ${PSI_ANALYTICS_SOURCE_ROOT}/extern/libOTe
-        ${PSI_ANALYTICS_SOURCE_ROOT}/extern/ABY/src
-        ${PSI_ANALYTICS_SOURCE_ROOT}/extern/ABY/extern/ENCRYPTO_utils/src
-        ${PSI_ANALYTICS_SOURCE_ROOT}/extern/HashingTables
+        ${SFKJ_SOURCE_ROOT}/src
+        ${SFKJ_SOURCE_ROOT}/extern
+        ${SFKJ_SOURCE_ROOT}/extern/libOTe/cryptoTools
+        ${SFKJ_SOURCE_ROOT}/extern/libOTe
+        ${SFKJ_SOURCE_ROOT}/extern/ABY/src
+        ${SFKJ_SOURCE_ROOT}/extern/ABY/extern/ENCRYPTO_utils/src
+        ${SFKJ_SOURCE_ROOT}/extern/HashingTables
         ${GLIB_INCLUDE_DIRS}
         )
 

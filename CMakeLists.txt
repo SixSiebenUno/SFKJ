@@ -4,8 +4,8 @@ cmake_policy(SET CMP0077 NEW)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 
-set(PSI_ANALYTICS_SOURCE_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
-set(PSI_ANALYTICS_BINARY_ROOT "${CMAKE_CURRENT_BINARY_DIR}")
+set(SFKJ_SOURCE_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+set(SFKJ_BINARY_ROOT "${CMAKE_CURRENT_BINARY_DIR}")
 
 set(Boost_USE_STATIC_LIBS OFF CACHE BOOL "Use shared boost libraries" FORCE)
 set(Boost_USE_STATIC_RUNTIME OFF CACHE BOOL "Use shared boost runtime" FORCE)
@@ -48,11 +48,11 @@ elseif (NOT ABY_FOUND AND NOT TARGET ABY::aby)
 endif ()
 
 # relic is already compiled by ENCRYPTO_utils, which is ABY's dependency
-set(RLC_LIBRARY "${PSI_ANALYTICS_BINARY_ROOT}/extern/ABY/lib/librelic_s.a")
+set(RLC_LIBRARY "${SFKJ_BINARY_ROOT}/extern/ABY/lib/librelic_s.a")
 
 file(COPY
         "${PROJECT_SOURCE_DIR}/extern/ABY/extern/ENCRYPTO_utils/extern/relic/include/"
-        "${PSI_ANALYTICS_BINARY_ROOT}/extern/ABY/extern/ENCRYPTO_utils/extern/relic/include/relic_conf.h"
+        "${SFKJ_BINARY_ROOT}/extern/ABY/extern/ENCRYPTO_utils/extern/relic/include/relic_conf.h"
     DESTINATION
         "${PROJECT_BINARY_DIR}/include/relic"
 )

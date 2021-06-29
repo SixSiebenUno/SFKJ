@@ -77,66 +77,14 @@ target_include_directories(SFKJ PUBLIC
         ${GLIB_INCLUDE_DIRS}
         )
 
-if (DEMO)
-    add_executable(demo demo.cpp)
-    target_link_libraries(demo PUBLIC
-            SFKJ
-            )
-    set_target_properties(demo
-        PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-    )
-    add_executable(q5 tpchq5demo.cpp)
-    target_link_libraries(q5 PUBLIC
-            SFKJ
-            )
-    set_target_properties(q5
-        PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-    )
-    add_executable(linear lineardemo.cpp)
-    target_link_libraries(linear PUBLIC
-            SFKJ
-            )
-    set_target_properties(linear
-        PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-    )
-endif (DEMO)
+add_executable(demo demo.cpp)
+target_link_libraries(demo PUBLIC SFKJ)
+set_target_properties(demo
+    PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
 
-if (MULDEMO)
-    add_executable(muldemo multidemo.cpp)
-    target_link_libraries(muldemo PUBLIC
-            SFKJ
-            )
-    set_target_properties(muldemo
-        PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-    )
-endif (MULDEMO)
-
-if (PSI_FUNCTION)
-    add_executable(psi psi.cpp)
-
-    target_link_libraries(psi PUBLIC
-            SFKJ
-            )
-    set_target_properties(psi
-        PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-    )
-endif (PSI_FUNCTION)
-
-if (PSI_ANALYTICS_BUILD_EXAMPLE)
-    add_executable(psi_analytics_eurocrypt19_example psi_analytics_example.cpp)
-
-    target_link_libraries(psi_analytics_eurocrypt19_example PUBLIC
-            SFKJ
-            )
-    set_target_properties(psi_analytics_eurocrypt19_example
-        PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-    )
-endif (PSI_ANALYTICS_BUILD_EXAMPLE)
-
-if (OEP_FUNCTION)
-    add_executable(oep testpermnet.cpp)
-    target_link_libraries(oep PUBLIC SFKJ)
-    set_target_properties(oep
-        PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-    )
-endif (OEP_FUNCTION)
+add_executable(puri puridemo.cpp)
+target_link_libraries(demo PUBLIC SFKJ)
+set_target_properties(demo
+    PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)

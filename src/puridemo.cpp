@@ -35,7 +35,7 @@ void ServerClientSync(ENCRYPTO::PsiAnalyticsContext context) {
 }
 
 void CheckPhase(vector<vector<uint32_t>> outputs, vector<bool> eqtags, ENCRYPTO::PsiAnalyticsContext &context) {
-  cout << "check final result one tag" << endl;
+    cout << "Before purification circuit" << endl;
     std::unique_ptr<CSocket> sockres = ENCRYPTO::EstablishConnection(context.address, context.port, static_cast<e_role>(context.role));
     if (context.role == SERVER) {
       std::vector<uint32_t> receive(outputs.size() * (outputs[0].size() + 1));
@@ -63,6 +63,31 @@ void CheckPhase(vector<vector<uint32_t>> outputs, vector<bool> eqtags, ENCRYPTO:
     }
 }
 
+void CheckPhase(vector<vector<uint32_t>> outputs, ENCRYPTO::PsiAnalyticsContext &context) {
+    cout << "After purification circuit" << endl;
+    std::unique_ptr<CSocket> sockres = ENCRYPTO::EstablishConnection(context.address, context.port, static_cast<e_role>(context.role));
+    if (context.role == SERVER) {
+      std::vector<uint32_t> receive(outputs.size() * (outputs[0].size()));
+      sockres->Receive(receive.data(), receive.size() * sizeof(uint32_t));
+      sockres->Close();
+      for (auto i=0, j=0; i<outputs.size(); ++i) {
+        for (auto k=0; k<outputs[i].size(); ++k) {
+          cout << ((uint32_t)(outputs[i][k] + receive[j])) << '|';
+          j++;
+        }
+        cout << endl;
+      }
+    } else {
+      std::vector<uint32_t> send;
+      for (auto i=0; i<outputs.size(); ++i) {
+        for (auto j=0; j<outputs[i].size(); ++j) {
+          send.push_back(outputs[i][j]);
+        }
+      }
+      sockres->Send(send.data(), send.size() * sizeof(uint32_t));
+      sockres->Close();
+    }
+}
 
 auto read_test_options(int32_t argcp, char **argvp) {
   namespace po = boost::program_options;
@@ -101,107 +126,32 @@ auto read_test_options(int32_t argcp, char **argvp) {
   return context;
 }
 
-std::vector<std::vector<uint32_t>> loadtpchdata(string filename, vector<uint32_t> filterindex) {
-    std::vector<std::vector<uint32_t>> weights;
-    string path = "../../data/tpch/data1M/" + filename;
-    cout << path << " , ";
-
-    if( access( path.c_str(), F_OK ) != -1 ) {
-        cout << "find ";
-        // file exists
-    } else {
-        cout << "not exists" << endl;
-        // file doesn't exist
-    }
-
-    ifstream fin(path.c_str(), ios::in);
-    string str;
-    // ignore first three lines
-    // getline(fin, str);
-    // getline(fin, str);
-    // getline(fin, str);
-    while (getline(fin, str)) {
-        std::vector<uint32_t> values;
-        uint32_t val = 0;
-        for (auto i=0; i<str.size(); ++i) {
-            if (str[i] == '|') {
-                values.push_back(val);
-                val = 0;
-            } else if (str[i] == '.') {
-              continue;
-            } else {
-                val = val * 10 + (str[i] - '0');
-            }
+void PuriDemo(ENCRYPTO::PsiAnalyticsContext config) {
+    ServerClientSync(config);
+    uint32_t neles = 1000, D = 4, nreal = 0;
+    double epi = 1;
+    vector<vector<uint32_t>> vals (neles);
+    vector<bool> tags (neles);
+    srand(time(0));
+    for (auto i=0; i<neles; ++i) {
+        for (auto j=0; j<D; ++j) {
+          vals[i].push_back(i*10 + j);
         }
-        values.push_back(val);
-
-        vector<uint32_t> tempvals;
-        for (auto i=0; i<filterindex.size(); ++i) {
-          tempvals.push_back(values[filterindex[i]]);
+        if (config.role == SERVER) {
+          tags[i] = rand() & 1;
+        } else {
+          tags[i] = rand() & 1;
         }
-
-        weights.push_back(tempvals);
-        if (weights.size() > 100) break;
     }
-    cout << weights.size() << " tuples" << endl;
-    fin.close();
-    return weights;
-}
+    
+    CheckPhase(vals, tags, config);
 
+    PurificationCircuitMultiWires(vals, tags, config);
 
-void TPCHDemo(PsiAnalyticsContext &config) {
-  vector<vector<uint32_t>> customer, lineitem, orders;
-  customer = loadtpchdata("customer.tbl", {0, 1, 3});
-  lineitem = loadtpchdata("lineitem.tbl", {0, 1, 2});
-  orders = loadtpchdata("orders.tbl", {0, 1, 3});
+    CheckPhase(vals, config);
 
-  if (config.role == SERVER) {
-    for (auto i=0; i<orders.size(); ++i) {
-      for (auto j=0; j<orders[i].size(); ++j) {
-        orders[i][j] = 0;
-      }
-    }
-  } else {
-    for (auto i=0; i<customer.size(); ++i) {
-      for (auto j=0; j<customer[i].size(); ++j) {
-        customer[i][j] = 0;
-      }
-    }
-    for (auto i=0; i<lineitem.size(); ++i) {
-      for (auto j=0; j<lineitem[i].size(); ++j) {
-        lineitem[i][j] = 0;
-      }
-    }
-  }
-
-  cout << "loading data finished ..." << endl;
-  ServerClientSync(config);
-
-  // SERVER holds customer & lineitem
-  // CLIENT holds order
-
-  vector<vector<uint32_t>> OC, LOC, outputs;
-  vector<bool> eq1, eq2;
-  
-  if (config.role == CLIENT) {
-    JoinServer({1}, orders, OC, eq1, config);
-  } else {
-    JoinClient({0}, customer, orders, OC, eq1, config);
-  }
-  CheckPhase(OC, eq1, config);
-  cout << "orders join customer finished" << endl;;
-  cout << "communication cost until now = " << config.comm_cost / 1024.0 / 1024 << " MB" <<endl;
-  cout << "time cost until now = " << config.total_time / CLOCKS_PER_SEC << " s" <<endl;
-
-  if (config.role == SERVER) {
-    SharedJoinWithTagServer({0}, lineitem, OC, eq1, LOC, eq2, config);
-  } else {
-    SharedJoinWithTagClient({0}, OC, lineitem, eq1, LOC, eq2, config);
-  }
-  CheckPhase(LOC, eq2, config);
-  cout << "lineitem join OC finished" << endl;
-  cout << "total communication cost = " << config.comm_cost / 1024.0 / 1024 << " MB" <<endl;
-  cout << "total time cost = " << config.total_time / CLOCKS_PER_SEC << " s" <<endl;
+    cout << "total communication cost = " << config.comm_cost / 1024.0 / 1024 << " MB" <<endl;
+    cout << "total time cost = " << config.total_time / CLOCKS_PER_SEC << " s" <<endl;
 }
 
 
@@ -209,6 +159,6 @@ int main(int argc, char **argv) {
   auto config = read_test_options(argc, argv);
   config.comm_cost = 0;
   config.total_time = 0;
-  TPCHDemo(config);
+  PuriDemo(config);
   return EXIT_SUCCESS;
 }

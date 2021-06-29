@@ -129,7 +129,6 @@ auto read_test_options(int32_t argcp, char **argvp) {
 void PuriDemo(ENCRYPTO::PsiAnalyticsContext config) {
     ServerClientSync(config);
     uint32_t neles = 10, D = 4, nreal = 0;
-    double epi = 1;
     vector<vector<uint32_t>> vals (neles);
     vector<bool> tags (neles);
     srand(time(0));
@@ -147,7 +146,7 @@ void PuriDemo(ENCRYPTO::PsiAnalyticsContext config) {
     CheckPhase(vals, tags, config);
 
     PurificationCircuit(vals, tags, config);
-    PurificationCircuitMultiWires(vals, tags, config);
+    // PurificationCircuitMultiWires(vals, tags, config);
 
     CheckPhase(vals, config);
 

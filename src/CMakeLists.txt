@@ -84,7 +84,7 @@ set_target_properties(demo
 )
 
 add_executable(puri puridemo.cpp)
-target_link_libraries(demo PUBLIC SFKJ)
-set_target_properties(demo
+target_link_libraries(puri PUBLIC SFKJ)
+set_target_properties(puri
     PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
 )

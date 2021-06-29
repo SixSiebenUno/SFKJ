@@ -140,7 +140,7 @@ void PuriDemo(ENCRYPTO::PsiAnalyticsContext config) {
         if (config.role == SERVER) {
           tags[i] = rand() & 1;
         } else {
-          tags[i] = rand() & 1;
+          tags[i] = 0;
         }
     }
     

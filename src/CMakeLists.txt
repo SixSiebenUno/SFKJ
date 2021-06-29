@@ -22,7 +22,7 @@ if(NOT GMP_LIB)
   message(FATAL_ERROR "gmpxx library not found.")
 endif()
 
-add_library(psi_analytics_eurocrypt19
+add_library(SFKJ
         common/psi_analytics.cpp
         common/helpers.cpp
         polynomials/Mersenne.cpp
@@ -39,18 +39,18 @@ add_library(psi_analytics_eurocrypt19
         sort/sort.cpp
         )
         
-set_target_properties(psi_analytics_eurocrypt19
+set_target_properties(SFKJ
         PROPERTIES ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
         )
 
-target_compile_options(psi_analytics_eurocrypt19
+target_compile_options(SFKJ
         PRIVATE
         -march=native
         -ffunction-sections -mpclmul -mbmi2 -maes
         -mavx -msse2 -msse3 -msse4.1
         -Wall -Wno-strict-overflow -Wno-ignored-attributes -Wno-parentheses)
 
-target_link_libraries(psi_analytics_eurocrypt19 INTERFACE
+target_link_libraries(SFKJ INTERFACE
         ABY::aby
         ENCRYPTO_utils::encrypto_utils
         ${GLIB_LDFLAGS}
@@ -66,8 +66,8 @@ target_link_libraries(psi_analytics_eurocrypt19 INTERFACE
         relic_s
         )
 
-target_include_directories(psi_analytics_eurocrypt19 PUBLIC
-        ${PSI_ANALYTICS_SOURCE_ROOT}/psi_analytics_eurocrypt19
+target_include_directories(SFKJ PUBLIC
+        ${PSI_ANALYTICS_SOURCE_ROOT}/src
         ${PSI_ANALYTICS_SOURCE_ROOT}/extern
         ${PSI_ANALYTICS_SOURCE_ROOT}/extern/libOTe/cryptoTools
         ${PSI_ANALYTICS_SOURCE_ROOT}/extern/libOTe
@@ -80,21 +80,21 @@ target_include_directories(psi_analytics_eurocrypt19 PUBLIC
 if (DEMO)
     add_executable(demo demo.cpp)
     target_link_libraries(demo PUBLIC
-            psi_analytics_eurocrypt19
+            SFKJ
             )
     set_target_properties(demo
         PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
     )
     add_executable(q5 tpchq5demo.cpp)
     target_link_libraries(q5 PUBLIC
-            psi_analytics_eurocrypt19
+            SFKJ
             )
     set_target_properties(q5
         PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
     )
     add_executable(linear lineardemo.cpp)
     target_link_libraries(linear PUBLIC
-            psi_analytics_eurocrypt19
+            SFKJ
             )
     set_target_properties(linear
         PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
@@ -104,7 +104,7 @@ endif (DEMO)
 if (MULDEMO)
     add_executable(muldemo multidemo.cpp)
     target_link_libraries(muldemo PUBLIC
-            psi_analytics_eurocrypt19
+            SFKJ
             )
     set_target_properties(muldemo
         PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
@@ -115,7 +115,7 @@ if (PSI_FUNCTION)
     add_executable(psi psi.cpp)
 
     target_link_libraries(psi PUBLIC
-            psi_analytics_eurocrypt19
+            SFKJ
             )
     set_target_properties(psi
         PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
@@ -126,7 +126,7 @@ if (PSI_ANALYTICS_BUILD_EXAMPLE)
     add_executable(psi_analytics_eurocrypt19_example psi_analytics_example.cpp)
 
     target_link_libraries(psi_analytics_eurocrypt19_example PUBLIC
-            psi_analytics_eurocrypt19
+            SFKJ
             )
     set_target_properties(psi_analytics_eurocrypt19_example
         PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
@@ -135,7 +135,7 @@ endif (PSI_ANALYTICS_BUILD_EXAMPLE)
 
 if (OEP_FUNCTION)
     add_executable(oep testpermnet.cpp)
-    target_link_libraries(oep PUBLIC psi_analytics_eurocrypt19)
+    target_link_libraries(oep PUBLIC SFKJ)
     set_target_properties(oep
         PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
     )

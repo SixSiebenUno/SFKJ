@@ -1,11 +1,8 @@
-project(PSI_ANALYTICS)
+project(SFKJ)
 cmake_minimum_required(VERSION 3.13)
 cmake_policy(SET CMP0077 NEW)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
-
-option(PSI_ANALYTICS_BUILD_TESTS "Build PSI analytics tests" ON)
-option(PSI_ANALYTICS_BUILD_EXAMPLE "Build PSI analytics example" ON)
 
 set(PSI_ANALYTICS_SOURCE_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 set(PSI_ANALYTICS_BINARY_ROOT "${CMAKE_CURRENT_BINARY_DIR}")
@@ -96,17 +93,4 @@ endif ()
 
 add_dependencies(libOTe relic_s)
 
-add_subdirectory(psi_analytics_eurocrypt19)
-
-if (PSI_ANALYTICS_BUILD_TESTS)
-    if (NOT EXISTS "${PROJECT_SOURCE_DIR}/extern/googletest/CMakeLists.txt")
-        find_package(Git REQUIRED)
-        message("initialize Git submodule: extern/googletest")
-        execute_process(COMMAND git submodule update --init extern/googletest
-                WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}")
-    endif ()
-
-    set(BUILD_GMOCK OFF)
-    add_subdirectory(extern/googletest EXCLUDE_FROM_ALL)
-    add_subdirectory(test)
-endif (PSI_ANALYTICS_BUILD_TESTS)
+add_subdirectory(src)

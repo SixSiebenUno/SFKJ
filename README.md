@@ -32,7 +32,7 @@ We purpose demo programs for join protocol (demo) and purification circuit (puri
 The original code of SecureML is in `extern/online `. And our updated codes (DP version linear regression;  purification circuit accuracy checking) is in `secureml/`. 
 
 ```
-cd secureml
+cd src/secureml
 mkdir build; cd build
 cmake ..
 make -j 4

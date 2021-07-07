@@ -51,6 +51,6 @@ target_link_libraries(plain  ${OPENSSL_LIBRARIES} m ${EMP-TOOL_LIBRARIES})
 
 
 add_executable(linear dpoulad.cpp)
-target_link_libraries(dpo    ${OPENSSL_LIBRARIES} m ${EMP-TOOL_LIBRARIES})
+target_link_libraries(linear    ${OPENSSL_LIBRARIES} m ${EMP-TOOL_LIBRARIES})
 
 

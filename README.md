@@ -1,71 +1,42 @@
-# PFAJ
+# Secure Machine Learning over Relational Data
 
-An implementation of private foreign-key acyclic join algorithm. Our work is based on OPPRF-PSI and ABY framework.
+A demo for Secure Machine Learning over Relational Data. Our work is based on OPPRF-PSI and ABY framework.
 
-## Required packages:
- - g++ (vection >=8) 
- - libboost-all-dev (version >=1.69) 
- - libgmp-dev 
- - libssl-dev 
- - libntl-dev
+### Requirements
 
-## DataSets:
+`cmake (version >= 3.13)`, `g++ (vection >=8) `, `libboost-all-dev (version >=1.69) `, `libgmp-dev`, `libssl-dev`, `libntl-dev`, `libglib2.0-dev`
 
-1. We perform on MovieLens-1M dataset. The dataset has 3 tables, which is
+You can install these requirements by using `sudo apt-get install xxx` in Ubuntu.
 
-   * Ratings (userID, movieID, score, timestamp)
-   * User (userID, .....)
-   * Movies (movieID, .....)
+### Installation & Execution
 
-   So the join tree is a complete binary tree with depth 2. There are two varieties of data processing,
+Clone this repo on GitHub, and then
 
-   (1). Filter all IDs under 100 and then join. This will output full data.
+```
+mkdir build; cd build
+cmake ..
+make -j 4
+```
 
-   (2). Filter the first 100 tuples and then join. This will output only two tuples with oblivious reveal protocol.
+We purpose demo programs for join protocol (demo) and purification circuit (puri). In join protocol, we pick the first 100 rows of TPC-H query 3 and finish the join. You can specify your own program by changing  "loadtpchdata()". For example, for the full query, you can remove the "break" sentence. In purification protocol, we use a demo of 100 rows to show our result. You can also choose your own data and feed into the program. Another protocols and 
 
-**Experiments**:
+```
+./demo -r 0/1 [-a IP_address]
+./puri -r 0/1 [-a IP_address]
+```
 
-Two party setting
+"-r" chooses the role for the program, 0 represents Alice and 1 represents Bob; The programs use default IP address "127.0.0.1" or you can specify by typing "-a" and IP address of your partner.
 
-* P0 holds Ratings
-* P1 holds User and Movies
+### SecureML
 
-Multi-party setting (a simplest demo)
+The original code of SecureML is in `extern/online `. And our updated codes (DP version linear regression;  purification circuit accuracy checking) is in `secureml/`. 
 
-* P0 holds Ratings
-* P1 holds Movies
-* P2 holds User
+```
+cd secureml
+mkdir build; cd build
+cmake ..
+make -j 4
+./linear 1/2 12001
+```
 
-After join, each party holds the shared data of all its subtree's information. In this demo, P0 holds [RUM], P1 holds [M] and P2 holds [U]
-
-
-
-2. We perform another demo on TPCH-1M dataset. The dataset has 3 tables, and we filter some useless attributes in each table, the remaining table is
-
-   * customer (CK, xxx, xxx)
-   * orders (OK, CK, xxx)
-   * lineitem (OK, LN, xxx)
-
-   And the result table is (OK, LN, xxx, CK, OK, xxx, OK, CK, xxx, CK, xxx, xxx). It is a 3 line join.
-
-**Experiments:**
-
-Two-party setting
-
-* P0 holds customer, lineitem
-* P1 holds irders
-
-Three-party setting
-
-* P0 holds lineitem
-* P1 holds orders
-* P2 holds customer
-
-After the join, P0 holds [LOC], P1 holds [OC] and P2 holds [C]. 
-
-
-## TODO: 
-
-1. GMW Protocol to update dummy tags and EQtest
-2. Linear Regression in 3PC
-3. Fix connection waiting time (now 1000 retry * 1s)
+"./linear 1/2 12001", the first number is role ID and the second number is port ID. Default IP address is "127.0.0.1" as well. If you want to change the IP address, you may change the codes.

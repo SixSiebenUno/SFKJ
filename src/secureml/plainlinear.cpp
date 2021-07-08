@@ -23,7 +23,7 @@ typedef Matrix<double,Dynamic,Dynamic> MatD;
 
 void load_test_data(MatD& data, MatD& label){
 	// ifstream infile("../../data/iris.csv" );
-	ifstream infile("../../data/oulad.dat" );
+	ifstream infile("../data/oulad.dat" );
 	int i=0;
     string s;
     // getline(infile,s);

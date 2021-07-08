@@ -216,7 +216,6 @@ int main(int argc, char** argv) {
 
     W.setZero();
     start_data = start_label = 0;
-    acc_id = 0;
     for (auto i=0; i<IT; ++i) {
         next_batch_perm(x_batch, start_data, train_data, perm_dummy);
         next_batch_perm(y_batch, start_label, train_label, perm_dummy);
@@ -233,7 +232,6 @@ int main(int argc, char** argv) {
 
     W.setZero();
     start_data = start_label = 0;
-    acc_id = 0;
     for (auto i=0; i<IT; ++i) {
         next_batch_perm(x_batch, start_data, train_data, perm_puri);
         next_batch_perm(y_batch, start_label, train_label, perm_puri);

@@ -103,7 +103,7 @@ Mat reconstruct(Mat A, int party, bool div=false, ofstream *of=NULL){
 }
 
 void load_dp_noise(Mat& dp, int party) {
-    ifstream F( "../../data/dpnoise" + to_string(party - 1) + ".txt" );
+    ifstream F( "../data/dpnoise" + to_string(party - 1) + ".txt" );
 
     cout << "load dp noise data.......\n";
 
@@ -208,8 +208,7 @@ void load_train_data(Mat& train_data0, Mat& train_label0, Mat& xa, int party){
 }
 
 void load_test_data(MatD& data, MatD& label){
-	// ifstream infile("../../data/iris.csv" );
-	ifstream infile("../../data/oulad.dat" );
+	ifstream infile("../data/oulad.dat" );
 	int i=0;
     string s;
     // getline(infile,s);

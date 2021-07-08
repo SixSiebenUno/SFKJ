@@ -127,8 +127,8 @@ void load_dp_noise(Mat& dp, int party) {
 }
 
 void load_train_data(Mat& train_data0, Mat& train_label0, Mat& xa, int party){
-	ifstream F( "data"+to_string(party)+".txt" );
-	ifstream F2("xa.txt");
+	ifstream F( "../data/data"+to_string(party)+".txt" );
+	ifstream F2("../data/xa.txt");
 	
 	if (party == 1)
 		cout << "opened data1.txt\n";

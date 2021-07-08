@@ -1,10 +1,10 @@
 # Secure Machine Learning over Relational Data
 
-A demo for Secure Machine Learning over Relational Data. Our work is based on OPPRF-PSI and ABY framework.
+A demo for Secure Machine Learning over Relational Data. Our work is based on OPPRF-PSI and ABY framework. We build our system on VMs (Standard_D8s_v3, 8vCPU, 32GB RAM) in Azure.
 
 ### Requirements
 
-`cmake (version >= 3.13)`, `g++ (vection >=8) `, `libboost-all-dev (version >=1.69) `, `libgmp-dev`, `libssl-dev`, `libntl-dev`, `libglib2.0-dev`
+`cmake (version >=3.13)`, `g++ (vection >=8) `, `libboost-all-dev (version >=1.69) `, `libgmp-dev`, `libssl-dev`, `libntl-dev`, `libglib2.0-dev`
 
 You can install these requirements by using `sudo apt-get install xxx` in Ubuntu.
 
@@ -18,7 +18,7 @@ cmake ..
 make -j 4
 ```
 
-We purpose demo programs for join protocol (demo) and purification circuit (puri). In join protocol, we pick the first 100 rows of TPC-H query 3 and finish the join. You can specify your own program by changing  "loadtpchdata()". For example, for the full query, you can remove the "break" sentence. In purification protocol, we use a demo of 100 rows to show our result. You can also choose your own data and feed into the program. Another protocols and 
+We purpose demo programs for join protocol (demo) and purification circuit (puri). In join protocol, we pick the first 100 rows of TPC-H query 3 and finish the join. You can specify your own program by changing  "loadtpchdata()". For example, for the full query, you can remove the "break" sentence. In purification protocol, we use a demo of 100 rows to show our result. You can also choose your own data and feed into the program. Another protocols and files are in directory  `demo/`.
 
 ```
 ./demo -r 0/1 [-a IP_address]

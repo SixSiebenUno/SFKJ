@@ -5,61 +5,108 @@
 #include <math.h>
 #include <vector>
 #include <algorithm>
-#include <random>
-#include <cmath>
+
 #include <time.h>
 
 #include <Eigen/Dense>
 
-#include <common.h>
-#define bigN N
+#define N 1234
+#define bigN 10000
+//#define N 12665
+#define D 784
+#define B 128
+#define testN 1000
+#define Ep 100
+#define IT 5000 //N*Ep/B
+#define L 20
+#define P 64
+#define ignorecoef 3
 
 using namespace std;
 using namespace Eigen;
 
 typedef unsigned long int uint64;
 typedef Matrix<double,Dynamic,Dynamic> Mat;
-typedef Matrix<double,Dynamic,Dynamic> MatD;
 
-void load_test_data(MatD& data, MatD& label){
-	// ifstream infile("../../data/iris.csv" );
-	ifstream infile("../data/oulad.dat" );
+void load_train_data(Mat& train_data, Mat& train_label){
+	ifstream infile( "../data/mnist_train.csv" );
+	cout<<"load training data.......\n";
+	{
+		int count1=0,count2=0;
+		int i=0;
+		while(infile){	
+			string s;
+			if (!getline(infile,s)) 
+				break;
+			istringstream ss(s);
+			int temp;
+			char c;
+			//read label
+			ss>>temp;
+			ss>>c;
+			if(temp == 0 && count1<N/2){
+				train_label(i) = 0;
+				count1++;
+				//read data (last entry 1)
+				for(int j=0;j<D-1;j++){
+					ss>>train_data(i,j);
+					ss>>c;
+				}
+				train_data(i,D-1) = 1;
+				i++;
+			}
+			if(temp != 0 && count2<N/2){
+				train_label(i) = 1;
+				count2++;
+				//read data (last entry 1)
+				for(int j=0;j<D-1;j++){
+					ss>>train_data(i,j);
+					ss>>c;
+				}
+				train_data(i,D-1) = 1;
+				i++;
+			}
+			if(i>=N)
+				break;
+		}
+		train_data.conservativeResize(i, D);
+		train_label.conservativeResize(i,1);
+		cout<<"n= "<<i<<endl;
+	}
+	infile.close();
+}
+
+void load_test_data(Mat& test_data, Mat& test_label){
+	ifstream infile2( "../data/mnist_test.csv" );
+    int count1=0, count2=0;
 	int i=0;
-    string s;
-    // getline(infile,s);
-    // getline(infile,s);
-    // getline(infile,s);
-	//cout<<"load testing data.......\n";
-	while(infile){
-		if (!getline(infile,s)) 
+	cout<<"load testing data.......\n";
+	while(infile2){
+		string s;
+		if (!getline(infile2,s)) 
 			break;
-		cout << s << endl;
 		istringstream ss(s);
 		int temp;
 		char c;
-
-		ss >> label(i);
-		ss >> c;
-        for (int j=0; j<D-1; ++j) {
-            ss>>data(i,j);
-			ss>>c;
-        }
-        data(i,D-1) = 1;
-        data.row(i) /= 32;
-		// data.row(i).normalize();
-
-        // string name;
-        // ss>>name;
-        // if (name == "setosa") label(i) = 0;
-        // else if (name == "versicolor") label(i) = 1;
-        // else if (name == "virginica") label(i) = 2;
-        ++i;
-        
+		//read label
+		ss>>temp;
+		ss>>c;
+		//if(temp == 0 || temp == 1){
+			test_label(i) = (temp!=0);
+			//read data (last entry 1)
+			for(int j=0;j<D-1;j++){
+				ss>>test_data(i,j);
+				ss>>c;
+			}	
+			test_data(i,D-1) = 1;
+			i++;
+		// }
+        if (i >= testN) break;
 	}
-	data.conservativeResize(i, D);
-	label.conservativeResize(i,1);
-	infile.close();
-	cout << data.row(0) << ' ' << label.row(0) << endl;
+    cout << "n=" << i << endl;
+	test_data.conservativeResize(i, D);
+	test_label.conservativeResize(i,1);
+	infile2.close();
 	return;
 }
 
@@ -93,10 +140,13 @@ void logistic_function(Mat x, Mat w, Mat &fx) {
 }
 
 double test_model(Mat w, Mat x, Mat y) {
-    Mat y_ = x * w;
+    Mat y_;
+    logistic_function(x, w, y_);
     uint32_t count = 0, all = y.rows();
     for (auto i=0; i<all; ++i) {
-        if (round(y_(i)) == y(i)) {
+        if (y_(i) > 0.5 && y(i) == 1) {
+            ++count;
+        } else if (y_(i) < 0.5 && y(i) == 0) {
             ++count;
         }
     }
@@ -107,34 +157,31 @@ int main(int argc, char** argv) {
     // load data
     Mat train_data(N,D), train_label(N,1);
     Mat test_data(testN,D), test_label(testN,1);
-    load_test_data(train_data, train_label);
+    load_train_data(train_data, train_label);
     load_test_data(test_data, test_label);
     srand(time(0));
 
     for (auto i=0; i<train_data.rows(); ++i) {
         // train_data.row(i) /= train_data.row(i).maxCoeff();
-        // train_data.row(i).normalize();
+        train_data.row(i).normalize();
     }
     for (auto i=0; i<test_data.rows(); ++i) {
         // test_data.row(i) /= test_data.row(i).maxCoeff();
-        // test_data.row(i).normalize();
+        test_data.row(i).normalize();
     }
     
     // training phase
     Mat W(D, 1);
     for (auto i=0; i<D; ++i) {W(i) = 0;}
-    // W.normalize();
+    W.normalize();
     W /= B;
     Mat x_batch(B,D), tx_batch, y_batch(B,1);
     Mat fx_batch(B, 1), delta(D, 1);
 
     uint32_t batchcheck = 10;
     uint32_t start_data = 0, start_label = 0;
-    double lr = 0.01 / B; 
+    double lr = 0.0024 / 2.7 / 2.4; 
     //0.0024
-
-// oulad coefficient
-// # -0.00427, 0.00276, -0.168, 0.0206, 0, 0.0127, -0.373
 
     vector<int32_t> perm(N);
     for (auto i=0; i<N; ++i) {
@@ -142,46 +189,21 @@ int main(int argc, char** argv) {
     }
     random_shuffle(perm.begin(), perm.end());
 
-    vector<uint32_t> iter, iter_puri, iter_dummy;
-    vector<double> acc_baseline = {0.4, 0.6, 0.8, 0.9, 1.0};
-    uint32_t acc_id = 0;
-
-    std::random_device rd{};
-    std::mt19937 gen{127}; // 97127
-    std::normal_distribution<> d{0, 1};
-    double bias = 354.79 * 2.24;
-    Mat dp(D, 1);
-
     vector<double> accuracy;
-    for (auto i=0; i<5000; ++i) {
+    for (auto i=0; i<IT; ++i) {
         next_batch_perm(x_batch, start_data, train_data, perm);
         next_batch_perm(y_batch, start_label, train_label, perm);
         tx_batch = x_batch.transpose();
-        linear_function(x_batch, W, fx_batch);
+        logistic_function(x_batch, W, fx_batch);
         delta = tx_batch * (fx_batch - y_batch);
         // cout << (fx_batch - y_batch) << endl;
         // delta = delta / delta.norm();
-        for (auto j=0; j<D; ++j) {
-            dp(j, 0) = d(gen) * bias;
-        }
-        delta = delta + dp;
         W = W - delta * lr;
         if (i % batchcheck == 0) {
             accuracy.push_back(test_model(W, test_data, test_label));
             cout << i << ' ' << test_model(W, test_data, test_label) << endl;
-            // cout << "W = " << W << endl << endl;
         }
     }
-    cout << bias << endl;
-    cout << "accuracy = " << test_model(W, test_data, test_label) << endl;
-
-    // MatD newW(D, 1);
-    // newW << -0.00427, 0.00276, -0.168, 0.0206, 0, 0.0127, -0.373;
-    // newW *= 32;
-    // cout << "accuracy = " << test_model(newW, test_data, test_label) << endl;
-
-
-    return 0;
 
     vector<double> acc_dummy, acc_puri;
     vector<int32_t> perm_dummy(bigN), perm_puri(bigN);
@@ -199,7 +221,7 @@ int main(int argc, char** argv) {
         next_batch_perm(x_batch, start_data, train_data, perm_dummy);
         next_batch_perm(y_batch, start_label, train_label, perm_dummy);
         tx_batch = x_batch.transpose();
-        linear_function(x_batch, W, fx_batch);
+        logistic_function(x_batch, W, fx_batch);
         delta = tx_batch * (fx_batch - y_batch);
         // delta = delta / delta.norm();
         W = W - delta * lr;
@@ -216,7 +238,7 @@ int main(int argc, char** argv) {
         next_batch_perm(x_batch, start_data, train_data, perm_puri);
         next_batch_perm(y_batch, start_label, train_label, perm_puri);
         tx_batch = x_batch.transpose();
-        linear_function(x_batch, W, fx_batch);
+        logistic_function(x_batch, W, fx_batch);
         delta = tx_batch * (fx_batch - y_batch);
         // delta = delta / delta.norm();
         W = W - delta * lr;

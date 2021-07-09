@@ -208,7 +208,6 @@ void load_train_data(Mat& train_data0, Mat& train_label0, Mat& xa, int party){
 }
 
 void load_test_data(MatD& data, MatD& label){
-	// ifstream infile("../../data/iris.csv" );
 	ifstream infile("../data/oulad.dat" );
 	int i=0;
     string s;
@@ -255,7 +254,7 @@ vector<int> read_MT(Mat& a,Mat& b_1,Mat& c_1,Mat& b_2,Mat& c_2, int party){
 	vector<int> perm(Ep*N,0);
 	
 	
-	ifstream F("MT"+to_string(party)+".txt");
+	ifstream F("../data/MT"+to_string(party)+".txt");
 	char temp;
 	
 	{
